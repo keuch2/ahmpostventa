@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -8,6 +8,7 @@ import { getUsuario, createUsuario, updateUsuario } from '../../../services/usua
 
 const baseSchema = {
   nombre: z.string().min(1, 'Requerido'),
+  apellido: z.string().optional(),
   email: z.string().email('Email inválido'),
   role: z.enum(['admin', 'superadmin']),
   telefono: z.string().optional(),
@@ -37,16 +38,22 @@ export default function UsuarioFormPage() {
   useEffect(() => {
     if (data?.data) {
       const u = data.data;
-      reset({ nombre: u.nombre, email: u.email, role: u.role, telefono: u.telefono || '', celular: u.celular || '', activo: u.activo, password: '' });
+      reset({ nombre: u.nombre, apellido: u.apellido || '', email: u.email, role: u.role, telefono: u.telefono || '', celular: u.celular || '', activo: u.activo, password: '' });
     }
   }, [data, reset]);
+
+  const [serverError, setServerError] = useState('');
 
   const mutation = useMutation({
     mutationFn: (values) => isEdit ? updateUsuario(id, values) : createUsuario(values),
     onSuccess: () => navigate('/admin/usuarios'),
+    onError: (err) => {
+      setServerError(err?.message || err?.error || 'Error al guardar el usuario.');
+    },
   });
 
   const onSubmit = (values) => {
+    setServerError('');
     if (isEdit && !values.password) delete values.password;
     mutation.mutate(values);
   };
@@ -63,10 +70,16 @@ export default function UsuarioFormPage() {
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 space-y-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Nombre</label>
-          <input {...register('nombre')} className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-honda-red" />
-          {errors.nombre && <p className="text-xs text-red-500 mt-1">{errors.nombre.message}</p>}
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Nombre</label>
+            <input {...register('nombre')} className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-honda-red" />
+            {errors.nombre && <p className="text-xs text-red-500 mt-1">{errors.nombre.message}</p>}
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Apellido</label>
+            <input {...register('apellido')} className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-honda-red" />
+          </div>
         </div>
 
         <div>
@@ -107,8 +120,10 @@ export default function UsuarioFormPage() {
           <label htmlFor="activo" className="text-sm text-gray-700">Usuario activo</label>
         </div>
 
-        {mutation.isError && (
-          <p className="text-sm text-red-500">{mutation.error?.message || 'Error al guardar'}</p>
+        {serverError && (
+          <div className="bg-red-50 border border-red-200 rounded px-3 py-2 text-sm text-red-600">
+            {serverError}
+          </div>
         )}
 
         <div className="flex gap-3 pt-2">
