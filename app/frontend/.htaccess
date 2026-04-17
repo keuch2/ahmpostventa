@@ -1,0 +1,12 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /ahmpostventa/app/frontend/
+
+    # Serve assets (real files) directly
+    RewriteCond %{REQUEST_FILENAME} -f
+    RewriteCond %{REQUEST_URI} !\.html$
+    RewriteRule ^ - [L]
+
+    # Everything else (including /) serves the built index.html
+    RewriteRule ^ dist/index.html [L]
+</IfModule>

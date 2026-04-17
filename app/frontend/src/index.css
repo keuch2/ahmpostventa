@@ -1,0 +1,94 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: 'Roboto', Arial, sans-serif;
+  margin: 0;
+}
+
+:root {
+  --honda-red: #CC0000;
+  --honda-red-hover: #AA0000;
+  --honda-black: #1A1A1A;
+  --honda-gray: #767676;
+  --honda-light: #F5F5F5;
+}
+
+@layer components {
+  .btn-honda {
+    @apply bg-honda-red text-white font-bold uppercase tracking-wider transition-colors duration-200 cursor-pointer border-none;
+    letter-spacing: 0.08em;
+  }
+  .btn-honda:hover {
+    @apply bg-honda-red-dark;
+  }
+
+  .btn-honda-outline {
+    @apply border-2 border-honda-red text-honda-red font-bold uppercase tracking-wider bg-white cursor-pointer transition-all duration-200;
+    letter-spacing: 0.08em;
+  }
+  .btn-honda-outline:hover {
+    @apply bg-honda-red text-white;
+  }
+
+  .card-shadow {
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+  }
+  .card-shadow:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+
+  .vehicle-placeholder {
+    background: linear-gradient(135deg, #e5e7eb 0%, #f3f4f6 50%, #e5e7eb 100%);
+    @apply flex items-center justify-center text-gray-400 text-sm font-medium text-center;
+    letter-spacing: 0.5px;
+  }
+
+  .recall-card {
+    border-left: 4px solid transparent;
+  }
+  .recall-card.pending {
+    border-left-color: var(--honda-red);
+  }
+  .recall-card.done {
+    border-left-color: #16A34A;
+  }
+
+  .tab-btn {
+    border-bottom: 3px solid transparent;
+  }
+  .tab-btn.active {
+    border-bottom-color: var(--honda-red);
+    color: var(--honda-red);
+  }
+
+  .timeline-dot {
+    @apply w-3.5 h-3.5 rounded-full flex-shrink-0;
+  }
+  .timeline-dot.done {
+    background: var(--honda-red);
+  }
+  .timeline-dot.current {
+    background: var(--honda-red);
+    box-shadow: 0 0 0 4px rgba(204,0,0,0.2);
+  }
+  .timeline-dot.upcoming {
+    @apply bg-gray-300;
+  }
+  .timeline-line {
+    @apply h-0.5 flex-1;
+  }
+  .timeline-line.done {
+    background: var(--honda-red);
+  }
+  .timeline-line.upcoming {
+    @apply bg-gray-300;
+  }
+}
+
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--honda-red) !important;
+  box-shadow: 0 0 0 2px rgba(204,0,0,0.15);
+}

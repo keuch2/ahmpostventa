@@ -1,0 +1,29 @@
+# Frontend
+app/frontend/node_modules/
+app/frontend/dist/
+app/frontend/.env.local
+app/frontend/.env.development.local
+app/frontend/.env.test.local
+
+# Backend
+app/backend/vendor/
+app/backend/.env
+app/backend/storage/logs/
+app/backend/storage/framework/cache/
+app/backend/storage/framework/sessions/
+app/backend/storage/framework/views/
+app/backend/bootstrap/cache/
+app/backend/database/database.sqlite
+
+# OS
+.DS_Store
+*.log
+
+# IDE
+.idea/
+.vscode/
+*.suo
+*.user
+
+# Claude
+.claude/settings.local.json

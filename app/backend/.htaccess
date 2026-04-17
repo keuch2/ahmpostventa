@@ -1,0 +1,19 @@
+<IfModule mod_rewrite.c>
+    <IfModule mod_negotiation.c>
+        Options -MultiViews -Indexes
+    </IfModule>
+
+    RewriteEngine On
+
+    # Handle Authorization Header
+    RewriteCond %{HTTP:Authorization} .
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+    # Serve existing static files from public/
+    RewriteCond %{DOCUMENT_ROOT}/ahmpostventa/app/backend/public/$1 -f
+    RewriteRule ^(.+)$ public/$1 [L]
+
+    # Route everything else through public/index.php
+    # Set SCRIPT_NAME so Laravel strips the correct base path
+    RewriteRule ^(.*)$ public/index.php [E=SCRIPT_NAME:/ahmpostventa/app/backend/index.php,QSA,L]
+</IfModule>

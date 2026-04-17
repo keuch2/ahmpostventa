@@ -1,0 +1,1515 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VICAR | Honda Paraguay — Mi Garaje</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    body { font-family: 'Roboto', Arial, sans-serif; }
+    :root {
+      --honda-red: #CC0000;
+      --honda-red-hover: #AA0000;
+      --honda-black: #1A1A1A;
+      --honda-gray: #767676;
+      --honda-light: #F5F5F5;
+    }
+    .honda-red { color: var(--honda-red); }
+    .bg-honda-red { background-color: var(--honda-red); }
+    .bg-honda-black { background-color: var(--honda-black); }
+    .border-honda-red { border-color: var(--honda-red); }
+
+    /* Mega menu */
+    .mega-menu { display: none; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); z-index: 1000; }
+    .nav-item:hover .mega-menu { display: block; }
+    .nav-item { position: relative; }
+
+    /* Smooth view transitions */
+    .view-section { display: none; }
+    .view-section.active { display: block; }
+
+    /* Timeline dots */
+    .timeline-dot { width: 14px; height: 14px; border-radius: 50%; flex-shrink: 0; }
+    .timeline-dot.done { background: var(--honda-red); }
+    .timeline-dot.current { background: var(--honda-red); box-shadow: 0 0 0 4px rgba(204,0,0,0.2); }
+    .timeline-dot.upcoming { background: #D1D5DB; }
+    .timeline-line { height: 2px; flex: 1; }
+    .timeline-line.done { background: var(--honda-red); }
+    .timeline-line.upcoming { background: #D1D5DB; }
+
+    /* Recall card */
+    .recall-card { border-left: 4px solid transparent; }
+    .recall-card.pending { border-left-color: var(--honda-red); }
+    .recall-card.done { border-left-color: #16A34A; }
+
+    /* Tab active */
+    .tab-btn { border-bottom: 3px solid transparent; }
+    .tab-btn.active { border-bottom-color: var(--honda-red); color: var(--honda-red); }
+
+    /* Hover nav */
+    .nav-link:hover { color: var(--honda-red) !important; }
+    .hover-red:hover { color: var(--honda-red) !important; }
+
+    /* Service timeline scroll */
+    .timeline-scroll { overflow-x: auto; padding-bottom: 8px; }
+    .timeline-scroll::-webkit-scrollbar { height: 4px; }
+    .timeline-scroll::-webkit-scrollbar-track { background: #f1f1f1; }
+    .timeline-scroll::-webkit-scrollbar-thumb { background: #ccc; border-radius: 2px; }
+
+    /* Confirmation modal */
+    #confirm-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 9999; align-items: center; justify-content: center; }
+    #confirm-overlay.show { display: flex; }
+
+    /* Mobile menu */
+    #mobile-menu { display: none; }
+    #mobile-menu.open { display: block; }
+
+    /* Animation */
+    .transition-all { transition: all 0.2s ease; }
+
+    /* Vehicle image placeholder */
+    .vehicle-placeholder { background: linear-gradient(135deg, #e5e7eb 0%, #f3f4f6 50%, #e5e7eb 100%); display: flex; align-items: center; justify-content: center; color: #9CA3AF; font-size: 13px; font-weight: 500; text-align: center; letter-spacing: 0.5px; }
+
+    /* Input focus */
+    input:focus, select:focus, textarea:focus { outline: none; border-color: var(--honda-red) !important; box-shadow: 0 0 0 2px rgba(204,0,0,0.15); }
+
+    /* Honda button style */
+    .btn-honda { background-color: var(--honda-red); color: white; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; padding: 12px 32px; border: none; cursor: pointer; transition: background 0.2s; }
+    .btn-honda:hover { background-color: var(--honda-red-hover); }
+    .btn-honda-outline { border: 2px solid var(--honda-red); color: var(--honda-red); font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; padding: 10px 24px; background: white; cursor: pointer; transition: all 0.2s; }
+    .btn-honda-outline:hover { background-color: var(--honda-red); color: white; }
+
+    /* Card shadow */
+    .card-shadow { box-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04); }
+    .card-shadow:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+
+    /* Recall expandable */
+    .recall-body { display: none; }
+    .recall-body.open { display: block; }
+
+    /* Logo H */
+    .logo-h-box { background: var(--honda-red); width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .logo-h-box svg { fill: white; }
+
+    @media (max-width: 768px) {
+      .desktop-nav { display: none; }
+      .mobile-nav-btn { display: flex; }
+    }
+    @media (min-width: 769px) {
+      .mobile-nav-btn { display: none; }
+    }
+  </style>
+</head>
+<body class="bg-white text-gray-900">
+
+<!-- ═══════════════════════════════════════════════════════ HEADER ═══ -->
+<header class="sticky top-0 z-50 shadow-sm">
+
+  <!-- Top bar -->
+  <div class="bg-honda-black text-white text-xs py-1.5 px-4 text-center">
+    Llame al 021-XXX-XXXX &nbsp;|&nbsp; Lunes a Viernes 8:00 – 17:00
+  </div>
+
+  <!-- Main nav -->
+  <div class="bg-white border-b border-gray-200">
+    <div class="max-w-7xl mx-auto px-4 flex items-center h-14 gap-6">
+
+      <!-- Logo -->
+      <a href="#" onclick="showView('search')" class="flex items-center gap-4 flex-shrink-0">
+        <img src="honda_logo.png" alt="Honda Paraguay" class="h-7 w-auto">
+        <img src="owners_logo.svg" alt="Owners" class="h-5 w-auto">
+      </a>
+
+      <!--
+      NAVEGACIÓN DESKTOP — comentada temporalmente
+      <nav class="hidden md:flex items-center gap-1 ml-4 desktop-nav flex-1">
+        ... nav items ...
+      </nav>
+      -->
+
+      <!-- Right actions -->
+      <div class="ml-auto flex items-center gap-3">
+        <button class="text-gray-600 hover:text-red-700 transition-all p-2">
+          <i class="fa-solid fa-magnifying-glass text-base"></i>
+        </button>
+        <button class="text-sm text-gray-600 hover:text-red-700 flex items-center gap-1 transition-all">
+          ES <i class="fa-solid fa-chevron-down text-xs"></i>
+        </button>
+
+        <!-- Login / User button -->
+        <div id="header-login-btn">
+          <button onclick="simulateLogin()" class="btn-honda text-xs px-4 py-2 flex items-center gap-2">
+            <i class="fa-solid fa-user"></i> Iniciar sesión
+          </button>
+        </div>
+        <div id="header-user-btn" class="hidden">
+          <button onclick="showView('garage')" class="flex items-center gap-2 text-sm font-medium text-gray-700 hover:text-red-700 transition-all">
+            <div class="w-8 h-8 rounded-full bg-red-700 text-white flex items-center justify-center text-xs font-bold">JA</div>
+            <span class="hidden md:inline">José A.</span>
+            <i class="fa-solid fa-chevron-down text-xs"></i>
+          </button>
+        </div>
+
+        <!-- Mobile menu btn -->
+        <button class="mobile-nav-btn md:hidden p-2 text-gray-600" onclick="toggleMobileMenu()">
+          <i class="fa-solid fa-bars text-lg"></i>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Mobile menu — links comentados temporalmente -->
+  <div id="mobile-menu" class="bg-white border-b border-gray-200 md:hidden">
+    <div class="px-4 py-3 space-y-2">
+      <!--
+      <a href="#" class="block py-2 text-sm text-gray-700 border-b border-gray-100">VEHÍCULOS</a>
+      <a href="#" class="block py-2 text-sm text-gray-700 border-b border-gray-100">HERRAMIENTAS</a>
+      <a href="#" onclick="showView('garage')" class="block py-2 text-sm font-bold text-red-700 border-b border-gray-100">PROPIETARIOS</a>
+      <a href="#" class="block py-2 text-sm text-gray-700 border-b border-gray-100">EXPLORAR</a>
+      <a href="#" class="block py-2 text-sm text-gray-700">Buscar concesionario</a>
+      -->
+    </div>
+  </div>
+
+</header>
+<!-- ═══════════════════════════════════════════════════════ /HEADER ═══ -->
+
+
+<!-- ═══════════════════════════════════════ MAIN CONTENT AREA ══════ -->
+<main class="min-h-screen">
+
+
+<!-- ═══════════════════════════════ VISTA: SEARCH (Landing) ════════ -->
+<section id="view-search" class="view-section active">
+
+  <!-- Hero — split layout: black left / car image right -->
+  <div class="flex flex-col md:flex-row" style="min-height: 380px;">
+
+    <!-- Left: black panel -->
+    <div class="flex-1 flex items-center" style="background:#1a1a1a; padding: 56px 64px;">
+      <div style="max-width: 460px;">
+        <h1 style="color:#ffffff; font-size:2.4rem; font-weight:400; font-family:'Roboto',Arial,sans-serif; margin-bottom:28px; line-height:1.15;">
+          Bienvenido a Mi Garaje
+        </h1>
+        <p style="color:#d0d0d0; font-size:15px; font-weight:300; margin-bottom:10px; font-family:'Roboto',Arial,sans-serif;">
+          Tu centro de control para gestionar tu experiencia como propietario:
+        </p>
+        <ul style="color:#d0d0d0; font-size:14px; font-weight:300; font-family:'Roboto',Arial,sans-serif; margin-bottom:36px; list-style:disc; padding-left:20px; line-height:2;">
+          <li>Encuentra manuales, detalles de la app e información de recalls</li>
+          <li>Programa el servicio en línea para un mantenimiento fácil</li>
+          <li>Explora preguntas frecuentes y respuestas rápidas</li>
+        </ul>
+        <div style="display:flex; align-items:center; gap:24px;">
+          <button onclick="simulateLogin()"
+            style="background:#cc0000; color:#fff; font-family:'Roboto',Arial,sans-serif; font-size:13px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; border:none; padding:14px 36px; cursor:pointer; transition:background 0.2s;"
+            onmouseover="this.style.background='#aa0000'" onmouseout="this.style.background='#cc0000'">
+            INICIAR SESIÓN
+          </button>
+          <button onclick="simulateLogin()"
+            style="background:transparent; color:#ffffff; font-family:'Roboto',Arial,sans-serif; font-size:14px; font-weight:400; border:none; cursor:pointer; padding:0; text-decoration:none; transition:color 0.2s;"
+            onmouseover="this.style.color='#ccc'" onmouseout="this.style.color='#fff'">
+            REGISTRARSE
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: car image -->
+    <div class="flex-1" style="min-height:320px; overflow:hidden;">
+      <img src="Hondaimagemobile.png" alt="Honda CR-V"
+        style="width:100%; height:100%; object-fit:cover; object-position:center; display:block;">
+    </div>
+
+  </div>
+
+  <!-- Buscador: por modelo + por VIN -->
+  <div class="bg-white py-12 border-b border-gray-100">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="grid md:grid-cols-2 gap-12 items-start">
+
+        <!-- Left: Form -->
+        <div>
+          <div class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3" style="letter-spacing:0.12em;">Accede a tu información</div>
+          <h2 class="text-4xl font-bold text-gray-900 mb-5 leading-tight">Encuentra tu Honda</h2>
+          <p class="text-gray-600 text-sm mb-8 leading-relaxed max-w-md">
+            Ingresa la información de tu vehículo para obtener consejos útiles para su mantenimiento o inicia sesión en Mi Garaje para una experiencia más personalizada.
+          </p>
+
+          <!-- Selectors -->
+          <div class="mb-6">
+            <div class="flex flex-col sm:flex-row gap-2 mb-3">
+              <select id="sel-year" class="flex-1 border border-gray-300 px-3 py-2.5 text-sm text-gray-700 bg-white focus:border-red-600 rounded-sm">
+                <option value="">Año</option>
+                <option value="2024">2024</option>
+                <option value="2023">2023</option>
+                <option value="2022">2022</option>
+                <option value="2021">2021</option>
+                <option value="2020">2020</option>
+                <option value="2019">2019</option>
+                <option value="2018" selected>2018</option>
+                <option value="2017">2017</option>
+              </select>
+              <select id="sel-model" class="flex-1 border border-gray-300 px-3 py-2.5 text-sm text-gray-700 bg-white focus:border-red-600 rounded-sm">
+                <option value="">Modelo</option>
+                <option value="crv" selected>CR-V</option>
+                <option value="civic">Civic</option>
+                <option value="hrv">HR-V</option>
+                <option value="pilot">Pilot</option>
+                <option value="accord">Accord</option>
+                <option value="fit">Fit</option>
+              </select>
+              <select id="sel-trim" class="flex-1 border border-gray-300 px-3 py-2.5 text-sm text-gray-700 bg-white focus:border-red-600 rounded-sm">
+                <option value="">Trim</option>
+                <option value="lx">LX</option>
+                <option value="ex" selected>EX</option>
+                <option value="exl">EX-L</option>
+                <option value="touring">Touring</option>
+              </select>
+            </div>
+            <button onclick="searchByModel()" class="btn-honda px-10 py-3 text-sm">
+              BUSCAR
+            </button>
+          </div>
+
+          <!-- Divider -->
+          <div class="flex items-center gap-4 my-7">
+            <div class="flex-1 h-px bg-gray-200"></div>
+            <span class="text-xs text-gray-400 font-medium">— O —</span>
+            <div class="flex-1 h-px bg-gray-200"></div>
+          </div>
+
+          <!-- VIN search -->
+          <div>
+            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-1">
+              Número de VIN
+              <span class="inline-flex items-center justify-center w-4 h-4 rounded-full border border-gray-400 text-gray-500 text-xs cursor-help ml-1"
+                title="El VIN tiene 17 caracteres. Lo encuentras en el tablero o en la puerta del conductor.">i</span>
+            </label>
+            <p class="text-xs text-gray-500 mb-2">Ingresa tu número de VIN para obtener detalles personalizados de tu vehículo.</p>
+            <div class="flex gap-2">
+              <input id="vin-input" type="text" placeholder="Ej: 2HKRW2H8XJH123456"
+                class="flex-1 border border-gray-300 px-4 py-2.5 text-sm text-gray-900 font-mono tracking-wider rounded-sm"
+                maxlength="17"
+                onkeydown="if(event.key==='Enter') searchByVIN()">
+              <button onclick="searchByVIN()" class="btn-honda px-6 py-2.5 text-sm">
+                BUSCAR
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Vehicle placeholder -->
+        <div class="hidden md:flex justify-center items-center">
+          <div class="vehicle-placeholder w-full rounded-sm" style="height:280px; background:linear-gradient(150deg,#f0f0f0 0%,#f8f8f8 100%);">
+            <div class="text-center">
+              <i class="fa-solid fa-car text-5xl mb-4" style="color:#c8cdd4;"></i>
+              <div class="font-semibold" style="color:#9aa0a8; font-size:15px;">Honda CR-V 2018</div>
+              <div style="color:#b0b6be; font-size:13px; margin-top:4px;">Blanco Platino</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- What do you want to do today -->
+  <div class="bg-gray-50 py-12">
+    <div class="max-w-7xl mx-auto px-4">
+      <h2 class="text-xl font-bold text-gray-900 mb-8">¿Qué deseas hacer hoy?</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+
+        <div onclick="showView('schedule')" class="bg-white p-6 card-shadow rounded-sm cursor-pointer transition-all group hover:-translate-y-0.5">
+          <div class="w-12 h-12 bg-red-50 rounded-sm flex items-center justify-center mb-4 group-hover:bg-red-100 transition-all">
+            <i class="fa-solid fa-wrench text-red-700 text-lg"></i>
+          </div>
+          <h3 class="font-bold text-gray-900 text-sm mb-2">Programar servicio</h3>
+          <p class="text-xs text-gray-500 leading-relaxed">Agenda tu próximo mantenimiento con un taller certificado Honda.</p>
+          <div class="mt-4 text-xs font-bold text-red-700 flex items-center gap-1 group-hover:gap-2 transition-all">
+            Ver más <i class="fa-solid fa-arrow-right text-xs"></i>
+          </div>
+        </div>
+
+        <div onclick="showView('recalls')" class="bg-white p-6 card-shadow rounded-sm cursor-pointer transition-all group hover:-translate-y-0.5">
+          <div class="w-12 h-12 bg-yellow-50 rounded-sm flex items-center justify-center mb-4 group-hover:bg-yellow-100 transition-all">
+            <i class="fa-solid fa-triangle-exclamation text-yellow-600 text-lg"></i>
+          </div>
+          <h3 class="font-bold text-gray-900 text-sm mb-2">Retiros del mercado</h3>
+          <p class="text-xs text-gray-500 leading-relaxed">Verifica si tu vehículo tiene recalls activos de seguridad.</p>
+          <div class="mt-4 text-xs font-bold text-red-700 flex items-center gap-1 group-hover:gap-2 transition-all">
+            Ver más <i class="fa-solid fa-arrow-right text-xs"></i>
+          </div>
+        </div>
+
+        <div class="bg-white p-6 card-shadow rounded-sm cursor-pointer transition-all group hover:-translate-y-0.5">
+          <div class="w-12 h-12 bg-blue-50 rounded-sm flex items-center justify-center mb-4 group-hover:bg-blue-100 transition-all">
+            <i class="fa-solid fa-book-open text-blue-600 text-lg"></i>
+          </div>
+          <h3 class="font-bold text-gray-900 text-sm mb-2">Manual del usuario</h3>
+          <p class="text-xs text-gray-500 leading-relaxed">Accede al manual de tu Honda por año y modelo de forma digital.</p>
+          <div class="mt-4 text-xs font-bold text-red-700 flex items-center gap-1 group-hover:gap-2 transition-all">
+            Ver más <i class="fa-solid fa-arrow-right text-xs"></i>
+          </div>
+        </div>
+
+        <div class="bg-white p-6 card-shadow rounded-sm cursor-pointer transition-all group hover:-translate-y-0.5">
+          <div class="w-12 h-12 bg-green-50 rounded-sm flex items-center justify-center mb-4 group-hover:bg-green-100 transition-all">
+            <i class="fa-solid fa-cart-shopping text-green-600 text-lg"></i>
+          </div>
+          <h3 class="font-bold text-gray-900 text-sm mb-2">Comprar repuestos</h3>
+          <p class="text-xs text-gray-500 leading-relaxed">Encuentra piezas y accesorios Honda genuinos para tu vehículo.</p>
+          <div class="mt-4 text-xs font-bold text-red-700 flex items-center gap-1 group-hover:gap-2 transition-all">
+            Ver más <i class="fa-solid fa-arrow-right text-xs"></i>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Info strip -->
+  <div class="bg-honda-black text-white py-10">
+    <div class="max-w-7xl mx-auto px-4 grid md:grid-cols-3 gap-8 text-center">
+      <div>
+        <i class="fa-solid fa-shield-halved text-red-500 text-2xl mb-3"></i>
+        <h4 class="font-bold text-sm mb-1">Garantía Honda</h4>
+        <p class="text-xs text-gray-400">3 años / 100,000 km en vehículos nuevos</p>
+      </div>
+      <div>
+        <i class="fa-solid fa-certificate text-red-500 text-2xl mb-3"></i>
+        <h4 class="font-bold text-sm mb-1">Piezas Genuinas</h4>
+        <p class="text-xs text-gray-400">Solo repuestos originales Honda certificados</p>
+      </div>
+      <div>
+        <i class="fa-solid fa-headset text-red-500 text-2xl mb-3"></i>
+        <h4 class="font-bold text-sm mb-1">Soporte 24/7</h4>
+        <p class="text-xs text-gray-400">Asistencia en carretera disponible todo el año</p>
+      </div>
+    </div>
+  </div>
+
+</section>
+<!-- ═══════════════════════════════════════ /VISTA SEARCH ═══════════ -->
+
+
+<!-- ═══════════════════════════════ VISTA: MI GARAJE (Dashboard) ══ -->
+<section id="view-garage" class="view-section">
+  <div class="bg-gray-50 min-h-screen">
+
+    <!-- Section header -->
+    <div class="bg-white border-b border-gray-200">
+      <div class="max-w-7xl mx-auto px-4 py-6">
+        <div class="text-xs text-gray-400 uppercase tracking-widest mb-1">Mi cuenta</div>
+        <h1 class="text-2xl font-bold text-gray-900">Bienvenido, <span class="text-red-700">José Agüero</span></h1>
+        <p class="text-sm text-gray-500 mt-1">Gestiona tus vehículos Honda y servicios</p>
+      </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 py-8">
+      <div class="grid lg:grid-cols-4 gap-6">
+
+        <!-- Sidebar -->
+        <div class="lg:col-span-1">
+          <div class="bg-white card-shadow rounded-sm p-5">
+            <div class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Mis Productos</div>
+
+            <!-- Mini vehicle card -->
+            <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-sm cursor-pointer border-2 border-red-600" onclick="showView('garage')">
+              <div class="w-14 h-10 vehicle-placeholder rounded-sm flex-shrink-0">
+                <i class="fa-solid fa-car text-gray-300 text-lg"></i>
+              </div>
+              <div>
+                <div class="text-xs font-bold text-gray-900">CR-V 2018</div>
+                <div class="text-xs text-gray-400">VIN ···JH123456</div>
+              </div>
+            </div>
+
+            <button class="w-full mt-3 border-2 border-dashed border-gray-300 text-xs text-gray-400 py-3 rounded-sm hover:border-red-400 hover:text-red-600 transition-all flex items-center justify-center gap-2">
+              <i class="fa-solid fa-plus"></i> Agregar vehículo
+            </button>
+
+            <!-- Links -->
+            <div class="mt-6 space-y-1">
+              <div class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Accesos rápidos</div>
+              <a href="#" onclick="showView('schedule')" class="flex items-center gap-2 text-sm text-gray-600 hover:text-red-700 py-1.5 transition-all">
+                <i class="fa-solid fa-calendar-check w-4 text-gray-400"></i> Agendar servicio
+              </a>
+              <a href="#" onclick="showView('recalls')" class="flex items-center gap-2 text-sm text-gray-600 hover:text-red-700 py-1.5 transition-all">
+                <i class="fa-solid fa-triangle-exclamation w-4 text-yellow-500"></i> Recalls activos
+                <span class="ml-auto bg-red-600 text-white text-xs px-1.5 py-0.5 rounded-full">3</span>
+              </a>
+              <a href="#" class="flex items-center gap-2 text-sm text-gray-600 hover:text-red-700 py-1.5 transition-all">
+                <i class="fa-solid fa-book w-4 text-gray-400"></i> Manual del usuario
+              </a>
+              <a href="#" class="flex items-center gap-2 text-sm text-gray-600 hover:text-red-700 py-1.5 transition-all">
+                <i class="fa-solid fa-user w-4 text-gray-400"></i> Mi perfil
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Main content -->
+        <div class="lg:col-span-3">
+
+          <!-- Vehicle card -->
+          <div class="bg-white card-shadow rounded-sm mb-6 overflow-hidden">
+            <div class="grid md:grid-cols-5">
+
+              <!-- Vehicle image -->
+              <div class="md:col-span-2 vehicle-placeholder h-52 md:h-auto" style="min-height:200px">
+                <div class="text-center">
+                  <i class="fa-solid fa-car text-5xl text-gray-300 mb-3"></i>
+                  <div class="text-gray-400 text-sm font-medium">Honda CR-V 2018</div>
+                  <div class="text-gray-300 text-xs">Blanco Platino</div>
+                </div>
+              </div>
+
+              <!-- Vehicle info -->
+              <div class="md:col-span-3 p-6">
+                <div class="flex items-start justify-between mb-4">
+                  <div>
+                    <h2 class="text-xl font-bold text-gray-900">Honda CR-V 2018</h2>
+                    <div class="text-sm text-gray-500">AWD EX w/Leather CVT</div>
+                    <div class="text-xs text-gray-400 mt-1 font-mono">VIN: 2HKRW2H8XJH123456</div>
+                  </div>
+                  <button class="text-gray-400 hover:text-gray-600 text-sm"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                </div>
+
+                <!-- Recall alert badge -->
+                <div onclick="showView('recalls')" class="flex items-center gap-2 bg-red-50 border border-red-200 rounded-sm px-3 py-2.5 mb-4 cursor-pointer hover:bg-red-100 transition-all">
+                  <i class="fa-solid fa-triangle-exclamation text-red-600"></i>
+                  <span class="text-sm font-semibold text-red-700">3 recalls activos para tu vehículo</span>
+                  <span class="ml-auto text-xs text-red-600 font-bold flex items-center gap-1">Ver ahora <i class="fa-solid fa-arrow-right text-xs"></i></span>
+                </div>
+
+                <!-- Vehicle details grid -->
+                <div class="grid grid-cols-3 gap-3 mb-5 text-center">
+                  <div class="bg-gray-50 rounded-sm p-2.5">
+                    <div class="text-lg font-bold text-gray-900">45,000</div>
+                    <div class="text-xs text-gray-400">Km registrados</div>
+                  </div>
+                  <div class="bg-gray-50 rounded-sm p-2.5">
+                    <div class="text-lg font-bold text-gray-900">2018</div>
+                    <div class="text-xs text-gray-400">Año modelo</div>
+                  </div>
+                  <div class="bg-gray-50 rounded-sm p-2.5">
+                    <div class="text-lg font-bold text-yellow-600">3</div>
+                    <div class="text-xs text-gray-400">Recalls</div>
+                  </div>
+                </div>
+
+                <!-- Action buttons -->
+                <div class="flex gap-2 flex-wrap">
+                  <button onclick="showView('schedule')" class="btn-honda text-xs px-5 py-2.5">
+                    <i class="fa-solid fa-calendar-check mr-1.5"></i> AGENDAR SERVICIO
+                  </button>
+                  <button class="btn-honda-outline text-xs px-5 py-2.5">
+                    VER DETALLES
+                  </button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Tabs navigation -->
+          <div class="bg-white card-shadow rounded-sm">
+            <div class="flex overflow-x-auto border-b border-gray-200">
+              <button class="tab-btn active text-sm font-semibold text-gray-700 px-5 py-4 whitespace-nowrap flex-shrink-0 transition-all" onclick="switchTab('tab-recalls', this)">
+                <i class="fa-solid fa-triangle-exclamation text-yellow-500 mr-1.5"></i>
+                Recalls de Seguridad
+                <span class="ml-1.5 bg-red-600 text-white text-xs px-1.5 py-0.5 rounded-full">3</span>
+              </button>
+              <button class="tab-btn text-sm font-medium text-gray-500 px-5 py-4 whitespace-nowrap flex-shrink-0 hover:text-gray-700 transition-all" onclick="switchTab('tab-maintenance', this)">
+                <i class="fa-solid fa-wrench mr-1.5"></i> Mantenimiento
+              </button>
+              <button class="tab-btn text-sm font-medium text-gray-500 px-5 py-4 whitespace-nowrap flex-shrink-0 hover:text-gray-700 transition-all" onclick="switchTab('tab-manual', this)">
+                <i class="fa-solid fa-book-open mr-1.5"></i> Manual de Usuario
+              </button>
+              <button class="tab-btn text-sm font-medium text-gray-500 px-5 py-4 whitespace-nowrap flex-shrink-0 hover:text-gray-700 transition-all" onclick="switchTab('tab-history', this)">
+                <i class="fa-solid fa-clock-rotate-left mr-1.5"></i> Historial
+              </button>
+            </div>
+
+            <!-- Tab: Recalls -->
+            <div id="tab-recalls" class="tab-content p-5">
+              <div class="bg-yellow-50 border border-yellow-200 rounded-sm px-4 py-3 flex items-center gap-3 mb-4">
+                <i class="fa-solid fa-triangle-exclamation text-yellow-600 text-lg flex-shrink-0"></i>
+                <div>
+                  <div class="text-sm font-bold text-yellow-800">Hay 3 recalls activos para tu 2018 CR-V.</div>
+                  <div class="text-xs text-yellow-700">Consulta el taller más cercano para gestionar estos retiros.</div>
+                </div>
+                <button onclick="showView('recalls')" class="ml-auto btn-honda text-xs px-4 py-2">Ver todos</button>
+              </div>
+              <div class="space-y-2">
+                <div class="recall-card pending border border-gray-200 rounded-sm p-4 flex items-center gap-3">
+                  <div class="w-2 h-2 rounded-full bg-red-600 flex-shrink-0"></div>
+                  <div class="flex-1"><div class="text-sm font-semibold text-gray-800">Solenoide bomba alta presión</div><div class="text-xs text-gray-400">Código: SYP | Boletín: 0808/25</div></div>
+                  <span class="bg-red-100 text-red-700 text-xs font-bold px-2 py-0.5 rounded-sm">PENDIENTE</span>
+                </div>
+                <div class="recall-card pending border border-gray-200 rounded-sm p-4 flex items-center gap-3">
+                  <div class="w-2 h-2 rounded-full bg-red-600 flex-shrink-0"></div>
+                  <div class="flex-1"><div class="text-sm font-semibold text-gray-800">Inflador airbag conductor (Takata)</div><div class="text-xs text-gray-400">Código: TAKATA-01</div></div>
+                  <span class="bg-red-100 text-red-700 text-xs font-bold px-2 py-0.5 rounded-sm">PENDIENTE</span>
+                </div>
+                <div class="recall-card done border border-gray-200 rounded-sm p-4 flex items-center gap-3">
+                  <div class="w-2 h-2 rounded-full bg-green-600 flex-shrink-0"></div>
+                  <div class="flex-1"><div class="text-sm font-semibold text-gray-800">Actualización software frenos ABS</div><div class="text-xs text-gray-400">Realizado el 12/06/2025 — OT: 1019067</div></div>
+                  <span class="bg-green-100 text-green-700 text-xs font-bold px-2 py-0.5 rounded-sm">REALIZADO</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tab: Maintenance -->
+            <div id="tab-maintenance" class="tab-content p-5 hidden">
+              <div class="text-center py-8">
+                <i class="fa-solid fa-wrench text-4xl text-gray-300 mb-4"></i>
+                <div class="text-gray-500 text-sm mb-4">Consulta el kit de mantenimiento para tu kilometraje actual</div>
+                <button onclick="showView('maintenance')" class="btn-honda text-sm px-8 py-3">VER MANTENIMIENTO PROGRAMADO</button>
+              </div>
+            </div>
+
+            <!-- Tab: Manual -->
+            <div id="tab-manual" class="tab-content p-5 hidden">
+              <div class="grid sm:grid-cols-2 gap-4">
+                <a href="#" class="flex items-center gap-4 p-4 border border-gray-200 rounded-sm hover:border-red-400 hover:bg-red-50 transition-all group">
+                  <div class="w-10 h-10 bg-red-50 rounded-sm flex items-center justify-center group-hover:bg-red-100"><i class="fa-solid fa-file-pdf text-red-600"></i></div>
+                  <div><div class="text-sm font-bold text-gray-800">Manual del Propietario</div><div class="text-xs text-gray-400">CR-V 2018 — Español (PDF)</div></div>
+                </a>
+                <a href="#" class="flex items-center gap-4 p-4 border border-gray-200 rounded-sm hover:border-red-400 hover:bg-red-50 transition-all group">
+                  <div class="w-10 h-10 bg-red-50 rounded-sm flex items-center justify-center group-hover:bg-red-100"><i class="fa-solid fa-file-pdf text-red-600"></i></div>
+                  <div><div class="text-sm font-bold text-gray-800">Manual de Garantía</div><div class="text-xs text-gray-400">CR-V 2018 — Español (PDF)</div></div>
+                </a>
+                <a href="#" class="flex items-center gap-4 p-4 border border-gray-200 rounded-sm hover:border-red-400 hover:bg-red-50 transition-all group">
+                  <div class="w-10 h-10 bg-blue-50 rounded-sm flex items-center justify-center group-hover:bg-blue-100"><i class="fa-solid fa-play text-blue-600"></i></div>
+                  <div><div class="text-sm font-bold text-gray-800">Guías en video</div><div class="text-xs text-gray-400">Tutoriales del vehículo</div></div>
+                </a>
+                <a href="#" class="flex items-center gap-4 p-4 border border-gray-200 rounded-sm hover:border-red-400 hover:bg-red-50 transition-all group">
+                  <div class="w-10 h-10 bg-gray-50 rounded-sm flex items-center justify-center group-hover:bg-gray-100"><i class="fa-solid fa-book text-gray-600"></i></div>
+                  <div><div class="text-sm font-bold text-gray-800">Manual de Navegación</div><div class="text-xs text-gray-400">Honda Sensing / Audio</div></div>
+                </a>
+              </div>
+            </div>
+
+            <!-- Tab: History -->
+            <div id="tab-history" class="tab-content p-5 hidden">
+              <div class="space-y-3">
+                <div class="flex items-start gap-4 p-4 border border-gray-200 rounded-sm">
+                  <div class="w-10 h-10 bg-green-50 rounded-sm flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-check text-green-600"></i></div>
+                  <div class="flex-1">
+                    <div class="text-sm font-bold text-gray-800">Mantenimiento 40,000 km</div>
+                    <div class="text-xs text-gray-400">15/01/2025 — VICAR Central — OT: 1018744</div>
+                    <div class="text-xs text-gray-500 mt-1">Cambio de aceite + filtros + revisión general</div>
+                  </div>
+                  <div class="text-sm font-semibold text-gray-700">Gs 650,000</div>
+                </div>
+                <div class="flex items-start gap-4 p-4 border border-gray-200 rounded-sm">
+                  <div class="w-10 h-10 bg-green-50 rounded-sm flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-shield-halved text-green-600"></i></div>
+                  <div class="flex-1">
+                    <div class="text-sm font-bold text-gray-800">Recall ABS — Software actualizado</div>
+                    <div class="text-xs text-gray-400">12/06/2025 — VICAR Central — OT: 1019067</div>
+                    <div class="text-xs text-gray-500 mt-1">Actualización de firmware del sistema de frenos ABS</div>
+                  </div>
+                  <div class="text-sm font-semibold text-green-600">Sin costo</div>
+                </div>
+                <div class="flex items-start gap-4 p-4 border border-gray-200 rounded-sm">
+                  <div class="w-10 h-10 bg-green-50 rounded-sm flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-check text-green-600"></i></div>
+                  <div class="flex-1">
+                    <div class="text-sm font-bold text-gray-800">Mantenimiento 30,000 km</div>
+                    <div class="text-xs text-gray-400">08/03/2024 — VICAR Central — OT: 1017392</div>
+                    <div class="text-xs text-gray-500 mt-1">Cambio de aceite + bujías + revisión frenos</div>
+                  </div>
+                  <div class="text-sm font-semibold text-gray-700">Gs 820,000</div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+<!-- ═══════════════════════════════════════ /VISTA GARAGE ═══════════ -->
+
+
+<!-- ══════════════════════════════════ VISTA: RECALLS ══════════════ -->
+<section id="view-recalls" class="view-section">
+  <div class="bg-gray-50 min-h-screen">
+
+    <!-- Breadcrumb -->
+    <div class="bg-white border-b border-gray-200">
+      <div class="max-w-7xl mx-auto px-4 py-3 text-xs text-gray-500 flex items-center gap-2">
+        <a href="#" onclick="showView('search')" class="hover:text-red-700">Inicio</a>
+        <i class="fa-solid fa-chevron-right text-gray-300"></i>
+        <a href="#" onclick="showView('garage')" class="hover:text-red-700">Mi Garaje</a>
+        <i class="fa-solid fa-chevron-right text-gray-300"></i>
+        <span class="text-gray-800 font-medium">Recalls de Seguridad</span>
+      </div>
+    </div>
+
+    <div class="max-w-4xl mx-auto px-4 py-8">
+
+      <!-- Alert banner -->
+      <div class="bg-yellow-50 border border-yellow-300 rounded-sm px-5 py-4 flex items-start gap-3 mb-8">
+        <i class="fa-solid fa-triangle-exclamation text-yellow-600 text-xl flex-shrink-0 mt-0.5"></i>
+        <div>
+          <div class="font-bold text-yellow-800 text-sm">Hay 3 recalls activos para tu 2018 CR-V.</div>
+          <div class="text-yellow-700 text-sm mt-0.5">Ver ahora y tomar acción. Contacta un concesionario Honda autorizado.</div>
+        </div>
+      </div>
+
+      <!-- Header -->
+      <div class="mb-2">
+        <div class="text-xs text-gray-400 uppercase tracking-widest mb-1">Seguridad del vehículo</div>
+        <h1 class="text-2xl font-bold text-gray-900">Recalls de Seguridad — Honda CR-V 2018</h1>
+      </div>
+      <p class="text-sm text-gray-500 mb-8 leading-relaxed max-w-2xl">
+        Este sitio proporciona información sobre retiros del mercado anunciados en los últimos 15 años calendario.
+        <strong class="text-gray-700">(Actualizado: 18/02/2026).</strong> Por favor contacte un concesionario Honda autorizado para programar una cita.
+      </p>
+
+      <!-- VIN confirmation -->
+      <div class="flex items-center gap-2 bg-white border border-green-300 rounded-sm px-4 py-3 mb-6 text-sm">
+        <i class="fa-solid fa-circle-check text-green-600"></i>
+        <span class="text-gray-600">Verificando para VIN:</span>
+        <span class="font-mono font-bold text-gray-900 tracking-wider">2HKRW2H8XJH123456</span>
+        <span class="ml-auto text-green-600 font-semibold text-xs">✓ Aplica a tu vehículo</span>
+      </div>
+
+      <!-- Recalls list -->
+      <div class="space-y-4">
+
+        <!-- Recall 1: PENDIENTE -->
+        <div class="bg-white card-shadow rounded-sm overflow-hidden">
+          <div class="border-l-4 border-red-600 p-5">
+            <div class="flex items-start gap-3">
+              <div class="flex-1">
+                <div class="flex items-center gap-2 flex-wrap mb-2">
+                  <span class="bg-red-100 text-red-700 text-xs font-bold px-2.5 py-1 rounded-sm uppercase tracking-wide">PENDIENTE</span>
+                  <span class="text-xs text-gray-400">Campaña: <strong class="text-gray-600">SYP</strong></span>
+                  <span class="text-xs text-gray-400">Boletín: <strong class="text-gray-600">0808/25</strong></span>
+                </div>
+                <h3 class="text-base font-bold text-gray-900 mb-2">Componente de solenoide de la bomba de alta presión dañado</h3>
+                <p class="text-sm text-gray-600 leading-relaxed mb-3">
+                  El componente de solenoide de la bomba de alta presión puede estar dañado, lo que puede causar pérdida de potencia del motor o dificultades para arrancar el vehículo en condiciones adversas.
+                </p>
+                <div class="flex items-center gap-1.5 text-xs text-green-700 mb-4">
+                  <i class="fa-solid fa-circle-check"></i>
+                  <span>VIN confirmado — Este recall aplica a tu vehículo</span>
+                </div>
+              </div>
+              <button onclick="toggleRecall('recall-1-body')" class="text-gray-400 hover:text-gray-600 flex-shrink-0 p-1" id="recall-1-toggle">
+                <i class="fa-solid fa-chevron-down transition-transform"></i>
+              </button>
+            </div>
+
+            <!-- Expandable body -->
+            <div id="recall-1-body" class="recall-body border-t border-gray-100 pt-4 mt-1">
+              <div class="grid md:grid-cols-2 gap-4 mb-4 text-sm">
+                <div>
+                  <div class="text-xs font-bold text-gray-400 uppercase tracking-wide mb-1">Componente afectado</div>
+                  <div class="text-gray-700">Sistema de inyección de combustible — Bomba de alta presión</div>
+                </div>
+                <div>
+                  <div class="text-xs font-bold text-gray-400 uppercase tracking-wide mb-1">Riesgo de seguridad</div>
+                  <div class="text-gray-700">Pérdida de potencia o dificultad de arranque</div>
+                </div>
+                <div>
+                  <div class="text-xs font-bold text-gray-400 uppercase tracking-wide mb-1">Remedio</div>
+                  <div class="text-gray-700">Reemplazo sin costo del componente del solenoide</div>
+                </div>
+                <div>
+                  <div class="text-xs font-bold text-gray-400 uppercase tracking-wide mb-1">Tiempo estimado</div>
+                  <div class="text-gray-700">Aprox. 2 horas de taller</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex gap-2 pt-2">
+              <button onclick="showView('schedule')" class="btn-honda text-xs px-5 py-2.5">
+                <i class="fa-solid fa-calendar-check mr-1.5"></i> PROGRAMAR CITA
+              </button>
+              <button onclick="toggleRecall('recall-1-body')" class="btn-honda-outline text-xs px-4 py-2.5">
+                VER DETALLES
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recall 2: PENDIENTE (Takata) -->
+        <div class="bg-white card-shadow rounded-sm overflow-hidden">
+          <div class="border-l-4 border-red-600 p-5">
+            <div class="flex items-start gap-3">
+              <div class="flex-1">
+                <div class="flex items-center gap-2 flex-wrap mb-2">
+                  <span class="bg-red-100 text-red-700 text-xs font-bold px-2.5 py-1 rounded-sm uppercase tracking-wide">PENDIENTE</span>
+                  <span class="bg-red-700 text-white text-xs font-bold px-2.5 py-1 rounded-sm uppercase">PRIORIDAD ALTA</span>
+                  <span class="text-xs text-gray-400">Código: <strong class="text-gray-600">TAKATA-01</strong></span>
+                </div>
+                <h3 class="text-base font-bold text-gray-900 mb-2">Inflador del airbag del conductor puede romperse</h3>
+                <p class="text-sm text-gray-600 leading-relaxed mb-3">
+                  El inflador del airbag puede romperse durante el despliegue, proyectando fragmentos metálicos hacia los ocupantes del vehículo. Este es un defecto conocido del fabricante Takata que afecta a múltiples marcas.
+                </p>
+                <div class="flex items-center gap-1.5 text-xs text-green-700 mb-4">
+                  <i class="fa-solid fa-circle-check"></i>
+                  <span>VIN confirmado — Este recall aplica a tu vehículo</span>
+                </div>
+              </div>
+              <button onclick="toggleRecall('recall-2-body')" class="text-gray-400 hover:text-gray-600 flex-shrink-0 p-1">
+                <i class="fa-solid fa-chevron-down transition-transform"></i>
+              </button>
+            </div>
+
+            <div id="recall-2-body" class="recall-body border-t border-gray-100 pt-4 mt-1">
+              <div class="bg-red-50 border border-red-200 rounded-sm p-3 mb-4">
+                <div class="flex items-start gap-2">
+                  <i class="fa-solid fa-circle-exclamation text-red-600 flex-shrink-0 mt-0.5"></i>
+                  <p class="text-xs text-red-700 leading-relaxed">
+                    <strong>ADVERTENCIA CRÍTICA:</strong> Honda recomienda encarecidamente no llevar pasajeros en el asiento delantero hasta que se realice la reparación. Contacte VICAR de inmediato.
+                  </p>
+                </div>
+              </div>
+              <div class="grid md:grid-cols-2 gap-4 text-sm">
+                <div>
+                  <div class="text-xs font-bold text-gray-400 uppercase tracking-wide mb-1">Componente afectado</div>
+                  <div class="text-gray-700">Módulo airbag conductor — Inflador Takata</div>
+                </div>
+                <div>
+                  <div class="text-xs font-bold text-gray-400 uppercase tracking-wide mb-1">Remedio</div>
+                  <div class="text-gray-700">Reemplazo completo del módulo de airbag sin costo</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex gap-2 pt-2">
+              <button onclick="showView('schedule')" class="btn-honda text-xs px-5 py-2.5">
+                <i class="fa-solid fa-calendar-check mr-1.5"></i> PROGRAMAR CITA
+              </button>
+              <button onclick="toggleRecall('recall-2-body')" class="btn-honda-outline text-xs px-4 py-2.5">
+                VER DETALLES
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recall 3: REALIZADO -->
+        <div class="bg-white card-shadow rounded-sm overflow-hidden opacity-80">
+          <div class="border-l-4 border-green-500 p-5">
+            <div class="flex items-start gap-3">
+              <div class="flex-1">
+                <div class="flex items-center gap-2 flex-wrap mb-2">
+                  <span class="bg-green-100 text-green-700 text-xs font-bold px-2.5 py-1 rounded-sm uppercase tracking-wide">REALIZADO</span>
+                  <span class="text-xs text-gray-400">Código: <strong class="text-gray-600">ABS-SW</strong></span>
+                </div>
+                <h3 class="text-base font-bold text-gray-900 mb-1">Actualización de software del sistema de frenos ABS</h3>
+                <p class="text-sm text-gray-600 leading-relaxed mb-3">
+                  Actualización del firmware del módulo de control del sistema antibloqueo de frenos para mejorar el rendimiento en condiciones de baja adherencia.
+                </p>
+                <div class="grid sm:grid-cols-3 gap-3 text-xs text-gray-500 bg-gray-50 rounded-sm p-3">
+                  <div>
+                    <div class="font-bold text-gray-700 mb-0.5">Fecha de realización</div>
+                    <div class="flex items-center gap-1"><i class="fa-solid fa-calendar text-green-500"></i> 12/06/2025</div>
+                  </div>
+                  <div>
+                    <div class="font-bold text-gray-700 mb-0.5">Orden de trabajo</div>
+                    <div class="flex items-center gap-1"><i class="fa-solid fa-file text-green-500"></i> OT: 1019067</div>
+                  </div>
+                  <div>
+                    <div class="font-bold text-gray-700 mb-0.5">Taller</div>
+                    <div class="flex items-center gap-1"><i class="fa-solid fa-building text-green-500"></i> VICAR — Central</div>
+                  </div>
+                </div>
+              </div>
+              <i class="fa-solid fa-circle-check text-green-500 text-xl flex-shrink-0"></i>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Note -->
+      <p class="text-xs text-gray-400 mt-8 text-center leading-relaxed">
+        Para más información sobre retiros del mercado contacte al 021-XXX-XXXX o visite el concesionario VICAR más cercano.<br>
+        Los recalls son reparaciones gratuitas realizadas por el fabricante.
+      </p>
+
+    </div>
+  </div>
+</section>
+<!-- ═══════════════════════════════════════ /VISTA RECALLS ══════════ -->
+
+
+<!-- ════════════════════════════ VISTA: MANTENIMIENTO ══════════════ -->
+<section id="view-maintenance" class="view-section">
+  <div class="bg-gray-50 min-h-screen">
+
+    <!-- Breadcrumb -->
+    <div class="bg-white border-b border-gray-200">
+      <div class="max-w-7xl mx-auto px-4 py-3 text-xs text-gray-500 flex items-center gap-2">
+        <a href="#" onclick="showView('search')" class="hover:text-red-700">Inicio</a>
+        <i class="fa-solid fa-chevron-right text-gray-300"></i>
+        <a href="#" onclick="showView('garage')" class="hover:text-red-700">Mi Garaje</a>
+        <i class="fa-solid fa-chevron-right text-gray-300"></i>
+        <span class="text-gray-800 font-medium">Mantenimiento Programado</span>
+      </div>
+    </div>
+
+    <div class="max-w-4xl mx-auto px-4 py-8">
+
+      <div class="text-xs text-gray-400 uppercase tracking-widest mb-1">Kit de service</div>
+      <h1 class="text-2xl font-bold text-gray-900 mb-1">Mantenimiento Programado — Honda CR-V 2018</h1>
+      <p class="text-sm text-gray-500 mb-6">Consulta los productos y servicios necesarios para el mantenimiento de tu vehículo según el kilometraje.</p>
+
+      <!-- Mileage input -->
+      <div class="bg-white card-shadow rounded-sm p-5 mb-6">
+        <div class="flex flex-col sm:flex-row items-start sm:items-end gap-3">
+          <div class="flex-1">
+            <label class="text-xs font-bold text-gray-700 uppercase tracking-wide block mb-1.5">Tu kilometraje actual</label>
+            <div class="flex items-center gap-2">
+              <input id="km-input" type="number" value="45000" min="0" max="500000" step="1000"
+                class="border border-gray-300 rounded-sm px-4 py-2.5 text-gray-900 font-semibold w-40 text-center text-lg">
+              <span class="text-sm text-gray-500 font-medium">km</span>
+            </div>
+          </div>
+          <button onclick="consultarKilometraje()" class="btn-honda text-sm px-8 py-2.5">
+            CONSULTAR
+          </button>
+        </div>
+      </div>
+
+      <!-- Timeline -->
+      <div class="bg-white card-shadow rounded-sm p-5 mb-6">
+        <div class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Historial de mantenimientos</div>
+        <div class="timeline-scroll">
+          <div class="flex items-center min-w-max gap-0">
+
+            <div class="flex flex-col items-center">
+              <div class="timeline-dot done"></div>
+              <div class="text-xs text-gray-500 mt-1.5 whitespace-nowrap text-center">5,000 km</div>
+              <div class="text-xs text-green-600 mt-0.5 font-bold">✓</div>
+            </div>
+            <div class="timeline-line done w-12"></div>
+
+            <div class="flex flex-col items-center">
+              <div class="timeline-dot done"></div>
+              <div class="text-xs text-gray-500 mt-1.5 whitespace-nowrap text-center">10,000 km</div>
+              <div class="text-xs text-green-600 mt-0.5 font-bold">✓</div>
+            </div>
+            <div class="timeline-line done w-12"></div>
+
+            <div class="flex flex-col items-center">
+              <div class="timeline-dot done"></div>
+              <div class="text-xs text-gray-500 mt-1.5 whitespace-nowrap text-center">20,000 km</div>
+              <div class="text-xs text-green-600 mt-0.5 font-bold">✓</div>
+            </div>
+            <div class="timeline-line done w-12"></div>
+
+            <div class="flex flex-col items-center">
+              <div class="timeline-dot done"></div>
+              <div class="text-xs text-gray-500 mt-1.5 whitespace-nowrap text-center">30,000 km</div>
+              <div class="text-xs text-green-600 mt-0.5 font-bold">✓</div>
+            </div>
+            <div class="timeline-line done w-12"></div>
+
+            <div class="flex flex-col items-center">
+              <div class="timeline-dot done"></div>
+              <div class="text-xs text-gray-500 mt-1.5 whitespace-nowrap text-center">40,000 km</div>
+              <div class="text-xs text-green-600 mt-0.5 font-bold">✓</div>
+            </div>
+            <div class="timeline-line done w-12"></div>
+
+            <!-- Current/next -->
+            <div class="flex flex-col items-center">
+              <div class="relative flex flex-col items-center">
+                <div class="absolute -top-5 text-xs font-bold text-red-700 whitespace-nowrap flex items-center gap-1">
+                  <i class="fa-solid fa-location-dot"></i> PRÓXIMO
+                </div>
+                <div class="timeline-dot current"></div>
+              </div>
+              <div class="text-xs font-bold text-red-700 mt-1.5 whitespace-nowrap">50,000 km</div>
+              <div class="text-xs text-red-500 mt-0.5">→ aqí</div>
+            </div>
+            <div class="timeline-line upcoming w-12"></div>
+
+            <div class="flex flex-col items-center">
+              <div class="timeline-dot upcoming"></div>
+              <div class="text-xs text-gray-400 mt-1.5 whitespace-nowrap">60,000 km</div>
+              <div class="text-xs text-gray-300 mt-0.5">○</div>
+            </div>
+            <div class="timeline-line upcoming w-12"></div>
+
+            <div class="flex flex-col items-center">
+              <div class="timeline-dot upcoming"></div>
+              <div class="text-xs text-gray-400 mt-1.5 whitespace-nowrap">70,000 km</div>
+              <div class="text-xs text-gray-300 mt-0.5">○</div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- Service kit card -->
+      <div class="bg-white card-shadow rounded-sm overflow-hidden border-t-4 border-red-600" id="service-kit-card">
+        <div class="p-6">
+          <div class="flex items-start justify-between mb-4">
+            <div>
+              <div class="flex items-center gap-2 mb-1">
+                <i class="fa-solid fa-wrench text-red-700"></i>
+                <h2 class="text-lg font-bold text-gray-900">MANTENIMIENTO 50.000 KM</h2>
+              </div>
+              <div class="text-sm text-gray-500">Próximo a los 50,000 km &nbsp;·&nbsp; <span class="font-semibold text-orange-600">Faltan ~5,000 km</span></div>
+            </div>
+            <div class="bg-orange-50 border border-orange-200 rounded-sm px-3 py-1.5 text-center">
+              <div class="text-xs text-orange-600 font-bold">PRÓXIMO</div>
+              <div class="text-xs text-orange-500">~5,000 km</div>
+            </div>
+          </div>
+
+          <!-- Productos -->
+          <div class="mb-5">
+            <div class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3 flex items-center gap-2">
+              <i class="fa-solid fa-box text-gray-300"></i> DETALLE DE PRODUCTOS
+            </div>
+            <div class="bg-gray-50 rounded-sm overflow-hidden">
+              <table class="w-full text-sm">
+                <tbody class="divide-y divide-gray-100">
+                  <tr class="hover:bg-gray-100 transition-colors">
+                    <td class="px-4 py-2.5 text-gray-600 font-mono text-xs w-36">SHPAHELIX ULTRA</td>
+                    <td class="px-2 py-2.5 text-gray-700">Aceite motor 0W-20 HELIX ULTRA 4L</td>
+                    <td class="px-4 py-2.5 text-right font-semibold text-gray-800 whitespace-nowrap">Gs 420,000</td>
+                  </tr>
+                  <tr class="hover:bg-gray-100 transition-colors">
+                    <td class="px-4 py-2.5 text-gray-600 font-mono text-xs">HMJA0200P...</td>
+                    <td class="px-2 py-2.5 text-gray-700">Aditivo limpieza HMJA0200P93G8YD1</td>
+                    <td class="px-4 py-2.5 text-right font-semibold text-gray-800 whitespace-nowrap">Gs 180,000</td>
+                  </tr>
+                  <tr class="hover:bg-gray-100 transition-colors">
+                    <td class="px-4 py-2.5 text-gray-600 font-mono text-xs">HMJA08798...</td>
+                    <td class="px-2 py-2.5 text-gray-700">Solución acuosa limpiaparabrisas</td>
+                    <td class="px-4 py-2.5 text-right font-semibold text-gray-800 whitespace-nowrap">Gs 10,000</td>
+                  </tr>
+                  <tr class="hover:bg-gray-100 transition-colors">
+                    <td class="px-4 py-2.5 text-gray-600 font-mono text-xs">HMJA9410...</td>
+                    <td class="px-2 py-2.5 text-gray-700">Arandela HMJA9410914000</td>
+                    <td class="px-4 py-2.5 text-right font-semibold text-gray-800 whitespace-nowrap">Gs 4,000</td>
+                  </tr>
+                  <tr class="hover:bg-gray-100 transition-colors">
+                    <td class="px-4 py-2.5 text-gray-600 font-mono text-xs">HMPADEST...</td>
+                    <td class="px-2 py-2.5 text-gray-700">Agua destilada 1L (x2)</td>
+                    <td class="px-4 py-2.5 text-right font-semibold text-gray-800 whitespace-nowrap">Gs 8,000</td>
+                  </tr>
+                </tbody>
+                <tfoot>
+                  <tr class="bg-gray-100 border-t border-gray-200">
+                    <td colspan="2" class="px-4 py-2.5 text-xs font-bold text-gray-600 uppercase">Total productos</td>
+                    <td class="px-4 py-2.5 text-right font-bold text-gray-900 whitespace-nowrap">Gs 622,000</td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+          </div>
+
+          <!-- Servicios -->
+          <div class="mb-6">
+            <div class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3 flex items-center gap-2">
+              <i class="fa-solid fa-person-digging text-gray-300"></i> SERVICIOS / MANO DE OBRA
+            </div>
+            <div class="bg-gray-50 rounded-sm overflow-hidden">
+              <table class="w-full text-sm">
+                <tbody>
+                  <tr class="hover:bg-gray-100 transition-colors">
+                    <td class="px-4 py-2.5 text-gray-600 font-mono text-xs">HMJASERV1</td>
+                    <td class="px-2 py-2.5 text-gray-700">Servicio Mantenimiento 1 <span class="text-xs text-gray-400">(100 min)</span></td>
+                    <td class="px-4 py-2.5 text-right font-semibold text-gray-800 whitespace-nowrap">Gs 150,000</td>
+                  </tr>
+                </tbody>
+                <tfoot>
+                  <tr class="bg-gray-100 border-t border-gray-200">
+                    <td colspan="2" class="px-4 py-2.5 text-xs font-bold text-gray-600 uppercase">Total servicio</td>
+                    <td class="px-4 py-2.5 text-right font-bold text-gray-900 whitespace-nowrap">Gs 150,000</td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+          </div>
+
+          <!-- Total & CTA -->
+          <div class="border-t-2 border-gray-200 pt-4">
+            <div class="flex items-center justify-between mb-4">
+              <div class="text-sm font-bold text-gray-600 uppercase tracking-wide">TOTAL ESTIMADO</div>
+              <div class="text-2xl font-bold text-gray-900">Gs 772,000</div>
+            </div>
+            <div class="text-xs text-gray-400 mb-5">* Precios estimados. El costo final puede variar según el estado del vehículo. IVA incluido.</div>
+            <button onclick="showView('schedule')" class="btn-honda w-full py-4 text-sm flex items-center justify-center gap-2">
+              <i class="fa-solid fa-calendar-check"></i>
+              AGENDAR CITA DE MANTENIMIENTO
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+<!-- ═══════════════════════════════════════ /VISTA MANTENIMIENTO ════ -->
+
+
+<!-- ═══════════════════════════════ VISTA: AGENDAR CITA ═══════════ -->
+<section id="view-schedule" class="view-section">
+  <div class="bg-gray-50 min-h-screen">
+
+    <!-- Breadcrumb -->
+    <div class="bg-white border-b border-gray-200">
+      <div class="max-w-7xl mx-auto px-4 py-3 text-xs text-gray-500 flex items-center gap-2">
+        <a href="#" onclick="showView('search')" class="hover:text-red-700">Inicio</a>
+        <i class="fa-solid fa-chevron-right text-gray-300"></i>
+        <a href="#" onclick="showView('garage')" class="hover:text-red-700">Mi Garaje</a>
+        <i class="fa-solid fa-chevron-right text-gray-300"></i>
+        <span class="text-gray-800 font-medium">Agendar Servicio</span>
+      </div>
+    </div>
+
+    <div class="max-w-2xl mx-auto px-4 py-8">
+
+      <div class="text-xs text-gray-400 uppercase tracking-widest mb-1">Postventa</div>
+      <h1 class="text-2xl font-bold text-gray-900 mb-1">Agendar Servicio Técnico</h1>
+      <p class="text-sm text-gray-500 mb-8">Completa el formulario y nos contactaremos contigo para confirmar la cita.</p>
+
+      <div id="schedule-form-wrapper" class="bg-white card-shadow rounded-sm p-6">
+        <form id="schedule-form" onsubmit="submitSchedule(event)" class="space-y-5">
+
+          <!-- Vehículo -->
+          <div>
+            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-1.5">Vehículo</label>
+            <select class="w-full border border-gray-300 rounded-sm px-4 py-2.5 text-sm text-gray-700 bg-white">
+              <option>Honda CR-V 2018 AWD EX — VIN 2HKRW2H8XJH123456</option>
+            </select>
+          </div>
+
+          <!-- Tipo de servicio -->
+          <div>
+            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-1.5">Tipo de servicio</label>
+            <select id="svc-type" class="w-full border border-gray-300 rounded-sm px-4 py-2.5 text-sm text-gray-700 bg-white">
+              <option value="">Seleccionar tipo de servicio</option>
+              <option value="mantenimiento" selected>Mantenimiento programado</option>
+              <option value="recall">Recall / Retiro del mercado</option>
+              <option value="reparacion">Reparación general</option>
+              <option value="inspeccion">Inspección</option>
+            </select>
+          </div>
+
+          <!-- Sucursal -->
+          <div>
+            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-1.5">Sucursal</label>
+            <select class="w-full border border-gray-300 rounded-sm px-4 py-2.5 text-sm text-gray-700 bg-white">
+              <option>VICAR Central — Av. España 123, Asunción</option>
+              <option>VICAR San Lorenzo — Ruta 2 Km 12</option>
+              <option>VICAR Encarnación — Av. Costanera 456</option>
+              <option>VICAR Ciudad del Este — Supercarretera Km 5</option>
+            </select>
+          </div>
+
+          <!-- Grid: Fecha + Kilometraje -->
+          <div class="grid sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-1.5">Fecha deseada</label>
+              <input type="date" class="w-full border border-gray-300 rounded-sm px-4 py-2.5 text-sm text-gray-700"
+                min="2026-04-09" value="2026-04-15">
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-1.5">Kilometraje actual</label>
+              <div class="flex items-center gap-2">
+                <input type="number" value="45000" class="flex-1 border border-gray-300 rounded-sm px-4 py-2.5 text-sm text-gray-700">
+                <span class="text-sm text-gray-400">km</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Horario -->
+          <div>
+            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-2">Horario preferido</label>
+            <div class="grid grid-cols-4 gap-2">
+              <label class="time-slot">
+                <input type="radio" name="horario" value="08:00" class="sr-only">
+                <div class="time-slot-box border border-gray-300 rounded-sm py-2 text-center text-sm text-gray-700 cursor-pointer hover:border-red-600 hover:bg-red-50 transition-all">08:00</div>
+              </label>
+              <label class="time-slot">
+                <input type="radio" name="horario" value="09:00" class="sr-only" checked>
+                <div class="time-slot-box border-2 border-red-600 bg-red-50 rounded-sm py-2 text-center text-sm font-bold text-red-700 cursor-pointer">09:00</div>
+              </label>
+              <label class="time-slot">
+                <input type="radio" name="horario" value="10:00" class="sr-only">
+                <div class="time-slot-box border border-gray-300 rounded-sm py-2 text-center text-sm text-gray-700 cursor-pointer hover:border-red-600 hover:bg-red-50 transition-all">10:00</div>
+              </label>
+              <label class="time-slot">
+                <input type="radio" name="horario" value="11:00" class="sr-only">
+                <div class="time-slot-box border border-gray-300 rounded-sm py-2 text-center text-sm text-gray-700 cursor-pointer hover:border-red-600 hover:bg-red-50 transition-all">11:00</div>
+              </label>
+              <label class="time-slot">
+                <input type="radio" name="horario" value="14:00" class="sr-only">
+                <div class="time-slot-box border border-gray-300 rounded-sm py-2 text-center text-sm text-gray-700 cursor-pointer hover:border-red-600 hover:bg-red-50 transition-all">14:00</div>
+              </label>
+              <label class="time-slot">
+                <input type="radio" name="horario" value="15:00" class="sr-only">
+                <div class="time-slot-box border border-gray-300 rounded-sm py-2 text-center text-sm text-gray-700 cursor-pointer hover:border-red-600 hover:bg-red-50 transition-all">15:00</div>
+              </label>
+              <label class="time-slot">
+                <input type="radio" name="horario" value="16:00" class="sr-only">
+                <div class="time-slot-box border border-gray-300 rounded-sm py-2 text-center text-sm text-gray-700 cursor-pointer hover:border-red-600 hover:bg-red-50 transition-all">16:00</div>
+              </label>
+            </div>
+          </div>
+
+          <!-- Comentarios -->
+          <div>
+            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-1.5">Comentarios adicionales</label>
+            <textarea rows="3" placeholder="Describe brevemente el motivo de tu visita o cualquier síntoma que hayas notado..."
+              class="w-full border border-gray-300 rounded-sm px-4 py-2.5 text-sm text-gray-700 resize-none"></textarea>
+          </div>
+
+          <!-- Terms -->
+          <label class="flex items-start gap-2 cursor-pointer">
+            <input type="checkbox" class="mt-0.5 accent-red-700" required>
+            <span class="text-xs text-gray-500">Acepto que VICAR S.A. se contacte conmigo para confirmar esta solicitud de cita. <a href="#" class="text-red-700 hover:underline">Ver política de privacidad.</a></span>
+          </label>
+
+          <!-- Submit -->
+          <button type="submit" class="btn-honda w-full py-4 text-sm flex items-center justify-center gap-2">
+            <i class="fa-solid fa-paper-plane"></i> SOLICITAR CITA
+          </button>
+
+        </form>
+      </div>
+
+      <!-- Confirmation (hidden by default) -->
+      <div id="schedule-confirmation" class="hidden">
+        <div class="bg-white card-shadow rounded-sm p-8 text-center">
+          <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <i class="fa-solid fa-circle-check text-green-600 text-3xl"></i>
+          </div>
+          <h2 class="text-xl font-bold text-gray-900 mb-2">¡Solicitud enviada con éxito!</h2>
+          <div class="inline-block bg-gray-100 rounded-sm px-4 py-2 mb-4">
+            <div class="text-xs text-gray-500">Número de solicitud</div>
+            <div class="text-lg font-bold text-gray-900 font-mono">#2026-04-1842</div>
+          </div>
+          <p class="text-sm text-gray-600 mb-2">Te contactaremos a</p>
+          <p class="text-sm font-bold text-gray-900 mb-6">jose.aguero@email.com</p>
+          <p class="text-xs text-gray-500 mb-8">para confirmar tu cita en las próximas 24 horas hábiles. Revisa también tu bandeja de spam.</p>
+          <div class="flex gap-3 justify-center">
+            <button onclick="showView('garage')" class="btn-honda text-sm px-8 py-3">
+              IR A MI GARAJE
+            </button>
+            <button onclick="resetScheduleForm()" class="btn-honda-outline text-sm px-6 py-3">
+              NUEVA CITA
+            </button>
+          </div>
+        </div>
+
+        <!-- Appointment summary -->
+        <div class="mt-4 bg-white card-shadow rounded-sm p-5">
+          <div class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Resumen de tu solicitud</div>
+          <div class="grid sm:grid-cols-2 gap-3 text-sm">
+            <div><span class="text-gray-500">Vehículo:</span> <span class="font-semibold text-gray-800">Honda CR-V 2018</span></div>
+            <div><span class="text-gray-500">Tipo:</span> <span class="font-semibold text-gray-800">Mantenimiento programado</span></div>
+            <div><span class="text-gray-500">Sucursal:</span> <span class="font-semibold text-gray-800">VICAR Central</span></div>
+            <div><span class="text-gray-500">Fecha:</span> <span class="font-semibold text-gray-800">15/04/2026 · 09:00 h</span></div>
+          </div>
+          <div class="mt-3 pt-3 border-t border-gray-100 flex items-center gap-2 text-xs text-gray-400">
+            <i class="fa-solid fa-circle-info text-blue-400"></i>
+            Esta es una solicitud, no una confirmación definitiva. VICAR verificará disponibilidad.
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+<!-- ═══════════════════════════════════════ /VISTA SCHEDULE ══════════ -->
+
+
+</main>
+<!-- ════════════════════════════════════════════════ /MAIN ═════════ -->
+
+
+<!-- ═══════════════════════════════════════════════ FOOTER ═════════ -->
+<footer style="background-color:#3d3d3d; color:#ccc; font-family:'Roboto',Arial,sans-serif;">
+
+  <!-- Main footer grid -->
+  <div class="max-w-7xl mx-auto px-8 py-12">
+    <div class="grid grid-cols-1 md:grid-cols-4" style="border-top:none;">
+
+      <!-- Col 1: SUV -->
+      <div class="pr-8 md:border-r" style="border-color:#555;">
+        <div class="text-white font-bold text-base mb-6 tracking-wide">SUV</div>
+        <ul class="space-y-4">
+          <li><a href="#" class="transition-all" style="color:#bbb; font-size:14px; font-weight:300;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#bbb'">WR-V</a></li>
+          <li><a href="#" class="transition-all" style="color:#bbb; font-size:14px; font-weight:300;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#bbb'">HR-V</a></li>
+          <li><a href="#" class="transition-all" style="color:#bbb; font-size:14px; font-weight:300;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#bbb'">CR-V</a></li>
+          <li><a href="#" class="transition-all" style="color:#bbb; font-size:14px; font-weight:300;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#bbb'">CR-V e:HEV</a></li>
+          <li><a href="#" class="transition-all" style="color:#bbb; font-size:14px; font-weight:300;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#bbb'">Pilot</a></li>
+        </ul>
+      </div>
+
+      <!-- Col 2: Atención al cliente + Postventa -->
+      <div class="px-8 md:border-r mt-8 md:mt-0" style="border-color:#555;">
+        <div class="text-white font-bold text-base mb-6 tracking-wide">ATENCIÓN AL CLIENTE</div>
+        <ul class="space-y-4 mb-8">
+          <li><a href="#" class="transition-all" style="color:#bbb; font-size:14px; font-weight:300;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#bbb'">RED DE VENTAS</a></li>
+          <li><a href="#" class="transition-all" style="color:#bbb; font-size:14px; font-weight:300;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#bbb'">SHOWROOMS</a></li>
+        </ul>
+        <div class="text-white font-bold text-base mb-6 tracking-wide">POSTVENTA</div>
+        <ul class="space-y-4">
+          <li><a href="#" class="transition-all" style="color:#bbb; font-size:14px; font-weight:300;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#bbb'">TALLERES</a></li>
+          <li><a href="#" class="transition-all" style="color:#bbb; font-size:14px; font-weight:300;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#bbb'">REPUESTOS</a></li>
+        </ul>
+      </div>
+
+      <!-- Col 3: Nosotros -->
+      <div class="px-8 md:border-r mt-8 md:mt-0" style="border-color:#555;">
+        <div class="text-white font-bold text-base mb-6 tracking-wide">NOSOTROS</div>
+        <ul class="space-y-4">
+          <li><a href="#" class="transition-all" style="color:#bbb; font-size:14px; font-weight:300;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#bbb'">SOBRE HONDA</a></li>
+          <li><a href="#" class="transition-all" style="color:#bbb; font-size:14px; font-weight:300;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#bbb'">VICAR S.A.</a></li>
+          <li><a href="#" class="transition-all" style="color:#bbb; font-size:14px; font-weight:300;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#bbb'">NOTICIAS</a></li>
+        </ul>
+      </div>
+
+      <!-- Col 4: Social + Addresses -->
+      <div class="pl-8 mt-8 md:mt-0">
+        <!-- Social icons -->
+        <div class="flex items-center gap-5 mb-8">
+          <a href="#" class="transition-all" style="color:#bbb; font-size:22px;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#bbb'">
+            <i class="fa-brands fa-instagram"></i>
+          </a>
+          <a href="#" class="transition-all" style="color:#bbb; font-size:22px;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#bbb'">
+            <i class="fa-brands fa-tiktok"></i>
+          </a>
+          <a href="#" class="transition-all" style="color:#bbb; font-size:22px;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#bbb'">
+            <i class="fa-brands fa-facebook"></i>
+          </a>
+          <a href="#" class="transition-all" style="color:#bbb; font-size:22px;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#bbb'">
+            <i class="fa-brands fa-whatsapp"></i>
+          </a>
+        </div>
+
+        <!-- Casa Central -->
+        <div class="mb-6">
+          <div class="text-white font-bold text-sm mb-2">Casa Central</div>
+          <div style="color:#bbb; font-size:13px; font-weight:300; line-height:1.7;">
+            Avda. Eusebio Ayala esq. Camilo Recalde,<br>
+            Asunción, Paraguay
+          </div>
+          <div class="mt-2" style="color:#bbb; font-size:13px; font-weight:700;">(+595 21) 728 5717</div>
+        </div>
+
+        <!-- Centro de Repuestos -->
+        <div>
+          <div class="text-white font-bold text-sm mb-2">Centro de Repuestos</div>
+          <div style="color:#bbb; font-size:13px; font-weight:300; line-height:1.7;">
+            25 de Mayo y Choferes de Chaco,<br>
+            Asunción
+          </div>
+          <div class="mt-2" style="color:#bbb; font-size:13px; font-weight:300; line-height:1.7;">
+            07:20 – 17:00 hs. lunes – viernes<br>
+            07:20 – 12:00 hs. sábado
+          </div>
+          <div class="mt-2" style="color:#bbb; font-size:13px; font-weight:700;">Tel. +595 21 728 5718</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Bottom bar -->
+  <div style="border-top:1px solid #555;">
+    <div class="max-w-7xl mx-auto px-8 py-8 flex flex-col items-center gap-3">
+      <img src="logohonda-footer.png" alt="Honda — The Power of Dreams" class="h-6 w-auto">
+      <p style="color:#999; font-size:13px; font-weight:300; text-align:center;">
+        VICAR S.A. representante exclusivo de los automóviles Honda en Paraguay
+      </p>
+    </div>
+  </div>
+
+</footer>
+<!-- ═══════════════════════════════════════════════ /FOOTER ════════ -->
+
+
+<!-- ════════════════════════════════════════════ JAVASCRIPT ════════ -->
+<script>
+// ── Data mock ────────────────────────────────────────────────────
+const dataMock = {
+  cliente: { nombre: "José Agüero", email: "jose.aguero@email.com", telefono: "0981-123-456" },
+  vehiculo: {
+    vin: "2HKRW2H8XJH123456", matricula: "ABC-123",
+    modelo: "Honda CR-V 2018 AWD EX w/Leather CVT", anio: 2018,
+    color: "Blanco Platino", kilometraje: 45000
+  },
+  recalls: [
+    { id: "SYP", titulo: "Solenoide bomba alta presión", estado: "pendiente", boletin: "0808/25" },
+    { id: "TAKATA-01", titulo: "Inflador airbag conductor", estado: "pendiente" },
+    { id: "ABS-SW", titulo: "Actualización software ABS", estado: "realizado", fecha: "12/06/2025", ot: "1019067" }
+  ]
+};
+
+// ── State ─────────────────────────────────────────────────────────
+let isLoggedIn = false;
+let currentView = 'search';
+
+// ── View navigation ───────────────────────────────────────────────
+function showView(viewId) {
+  // Hide all
+  document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
+  // Show target
+  const target = document.getElementById('view-' + viewId);
+  if (target) {
+    target.classList.add('active');
+    currentView = viewId;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+}
+
+// ── Login simulation ──────────────────────────────────────────────
+function simulateLogin() {
+  isLoggedIn = true;
+  document.getElementById('header-login-btn').classList.add('hidden');
+  document.getElementById('header-user-btn').classList.remove('hidden');
+  showView('garage');
+}
+
+// ── Mobile menu ───────────────────────────────────────────────────
+function toggleMobileMenu() {
+  const menu = document.getElementById('mobile-menu');
+  menu.classList.toggle('open');
+}
+
+// ── Search functions ─────────────────────────────────────────────
+function searchByVIN() {
+  const vin = document.getElementById('vin-input').value.trim();
+  if (vin.length < 5) {
+    shakeElement('vin-input');
+    return;
+  }
+  showView('recalls');
+}
+
+function searchByModel() {
+  const year = document.getElementById('sel-year').value;
+  const model = document.getElementById('sel-model').value;
+  if (!year || !model) {
+    alert('Por favor selecciona el año y modelo de tu vehículo.');
+    return;
+  }
+  showView('maintenance');
+}
+
+function shakeElement(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.style.borderColor = '#CC0000';
+  el.classList.add('animate-pulse');
+  el.focus();
+  setTimeout(() => { el.classList.remove('animate-pulse'); el.style.borderColor = ''; }, 1500);
+}
+
+// ── Tab switching (inside Mi Garaje) ─────────────────────────────
+function switchTab(tabId, btn) {
+  // Hide all tab contents
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden'));
+  // Deactivate all tab buttons
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  // Show target tab
+  const target = document.getElementById(tabId);
+  if (target) target.classList.remove('hidden');
+  // Activate button
+  if (btn) btn.classList.add('active');
+}
+
+// ── Recall expandable ────────────────────────────────────────────
+function toggleRecall(bodyId) {
+  const body = document.getElementById(bodyId);
+  if (!body) return;
+  body.classList.toggle('open');
+}
+
+// ── Mileage consult ──────────────────────────────────────────────
+function consultarKilometraje() {
+  const km = parseInt(document.getElementById('km-input').value) || 0;
+  // Simple logic: find next service milestone
+  const milestones = [5000, 10000, 20000, 30000, 40000, 50000, 60000, 70000, 80000, 90000, 100000];
+  const nextKm = milestones.find(m => m > km) || (Math.ceil(km / 10000) * 10000 + 10000);
+  const diff = nextKm - km;
+
+  const card = document.getElementById('service-kit-card');
+  if (card) {
+    // Update the "next service" info dynamically
+    const heading = card.querySelector('h2');
+    if (heading) heading.textContent = `MANTENIMIENTO ${nextKm.toLocaleString('es-PY')} KM`;
+
+    const subtitle = card.querySelector('.text-orange-600');
+    if (subtitle) subtitle.textContent = `Faltan ~${diff.toLocaleString('es-PY')} km`;
+
+    // Flash the card
+    card.style.boxShadow = '0 0 0 3px rgba(204,0,0,0.3)';
+    setTimeout(() => { card.style.boxShadow = ''; }, 800);
+
+    card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}
+
+// ── Schedule form ────────────────────────────────────────────────
+function submitSchedule(e) {
+  e.preventDefault();
+  document.getElementById('schedule-form-wrapper').classList.add('hidden');
+  document.getElementById('schedule-confirmation').classList.remove('hidden');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function resetScheduleForm() {
+  document.getElementById('schedule-form-wrapper').classList.remove('hidden');
+  document.getElementById('schedule-confirmation').classList.add('hidden');
+  document.getElementById('schedule-form').reset();
+}
+
+// ── Time slot visual selection ────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.time-slot input[type="radio"]').forEach(radio => {
+    radio.addEventListener('change', function() {
+      // Reset all
+      document.querySelectorAll('.time-slot-box').forEach(box => {
+        box.className = 'time-slot-box border border-gray-300 rounded-sm py-2 text-center text-sm text-gray-700 cursor-pointer hover:border-red-600 hover:bg-red-50 transition-all';
+      });
+      // Activate selected
+      if (this.checked) {
+        const box = this.nextElementSibling;
+        box.className = 'time-slot-box border-2 border-red-600 bg-red-50 rounded-sm py-2 text-center text-sm font-bold text-red-700 cursor-pointer';
+      }
+    });
+  });
+
+  // Close mobile menu on outside click
+  document.addEventListener('click', (e) => {
+    const menu = document.getElementById('mobile-menu');
+    const btn = e.target.closest('button[onclick="toggleMobileMenu()"]');
+    if (!btn && !menu.contains(e.target) && menu.classList.contains('open')) {
+      menu.classList.remove('open');
+    }
+  });
+});
+
+// ── Nav link prevention ───────────────────────────────────────────
+document.querySelectorAll('a[href="#"]').forEach(a => {
+  a.addEventListener('click', e => e.preventDefault());
+});
+</script>
+<!-- ════════════════════════════════════════ /JAVASCRIPT ═══════════ -->
+
+</body>
+</html>
