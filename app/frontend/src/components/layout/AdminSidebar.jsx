@@ -8,6 +8,7 @@ const navItems = [
   { to: '/admin/vehiculos', icon: 'fa-car',            label: 'Vehiculos' },
   { to: '/admin/clientes',  icon: 'fa-users',          label: 'Clientes' },
   { to: '/admin/citas',     icon: 'fa-calendar-check', label: 'Citas' },
+  { to: '/admin/usuarios',  icon: 'fa-user-shield',    label: 'Usuarios Admin' },
 ];
 
 export default function AdminSidebar() {

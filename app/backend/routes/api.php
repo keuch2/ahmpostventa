@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\KitServiceItemController;
 use App\Http\Controllers\Admin\VehiculoAdminController;
 use App\Http\Controllers\Admin\ClienteAdminController;
 use App\Http\Controllers\Admin\CitaAdminController;
+use App\Http\Controllers\Admin\UserAdminController;
 
 Route::prefix('v1')->group(function () {
     // Auth (public)
@@ -57,5 +58,7 @@ Route::prefix('v1')->group(function () {
         Route::get('/citas', [CitaAdminController::class, 'index']);
         Route::get('/citas/{id}', [CitaAdminController::class, 'show']);
         Route::put('/citas/{id}', [CitaAdminController::class, 'update']);
+
+        Route::apiResource('/usuarios', UserAdminController::class);
     });
 });
