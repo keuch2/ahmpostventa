@@ -1,6 +1,6 @@
 # Frontend
 app/frontend/node_modules/
-app/frontend/dist/
+# app/frontend/dist/ — included in repo for server deployment (no Node on server)
 app/frontend/.env.local
 app/frontend/.env.development.local
 app/frontend/.env.test.local
