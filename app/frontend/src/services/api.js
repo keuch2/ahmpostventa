@@ -16,7 +16,8 @@ api.interceptors.response.use(
   err => {
     if (err.response?.status === 401) {
       localStorage.removeItem('auth_token');
-      window.location.href = '/mygarage/login';
+      // Dispatch event so AuthContext reacts and PrivateRoute redirects naturally
+      window.dispatchEvent(new Event('auth:logout'));
     }
     return Promise.reject(err.response?.data || err);
   }

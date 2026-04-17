@@ -12,11 +12,18 @@ export function AuthProvider({ children }) {
     if (token) {
       api.get('/auth/me')
         .then(data => setUser(data.data))
-        .catch(() => localStorage.removeItem('auth_token'))
+        .catch(() => {
+          localStorage.removeItem('auth_token');
+          setUser(null);
+        })
         .finally(() => setLoading(false));
     } else {
       setLoading(false);
     }
+
+    const handleLogout = () => setUser(null);
+    window.addEventListener('auth:logout', handleLogout);
+    return () => window.removeEventListener('auth:logout', handleLogout);
   }, []);
 
   const login = async (email, password) => {
