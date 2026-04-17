@@ -21,11 +21,15 @@ import CampaniasListPage from '../pages/admin/campanias/CampaniasListPage';
 import CampaniaDetailPage from '../pages/admin/campanias/CampaniaDetailPage';
 import KitsListPage from '../pages/admin/kits/KitsListPage';
 import KitDetailPage from '../pages/admin/kits/KitDetailPage';
+import KitFormPage from '../pages/admin/kits/KitFormPage';
 import CitasAdminPage from '../pages/admin/citas/CitasAdminPage';
+import CitaFormPage from '../pages/admin/citas/CitaFormPage';
 import UsuariosListPage from '../pages/admin/usuarios/UsuariosListPage';
 import UsuarioFormPage from '../pages/admin/usuarios/UsuarioFormPage';
 import VehiculosAdminPage from '../pages/admin/vehiculos/VehiculosAdminPage';
+import VehiculoFormPage from '../pages/admin/vehiculos/VehiculoFormPage';
 import ClientesAdminPage from '../pages/admin/clientes/ClientesAdminPage';
+import ClienteFormPage from '../pages/admin/clientes/ClienteFormPage';
 
 function PrivateRoute({ children }) {
   const { user, loading } = useAuth();
@@ -66,10 +70,18 @@ export default function AppRoutes() {
         <Route path="campanias" element={<CampaniasListPage />} />
         <Route path="campanias/:id" element={<CampaniaDetailPage />} />
         <Route path="kits-service" element={<KitsListPage />} />
+        <Route path="kits-service/nuevo" element={<KitFormPage />} />
         <Route path="kits-service/:id" element={<KitDetailPage />} />
+        <Route path="kits-service/:id/editar" element={<KitFormPage />} />
         <Route path="vehiculos" element={<VehiculosAdminPage />} />
+        <Route path="vehiculos/nuevo" element={<VehiculoFormPage />} />
+        <Route path="vehiculos/:id/editar" element={<VehiculoFormPage />} />
         <Route path="clientes" element={<ClientesAdminPage />} />
+        <Route path="clientes/nuevo" element={<ClienteFormPage />} />
+        <Route path="clientes/:id/editar" element={<ClienteFormPage />} />
         <Route path="citas" element={<CitasAdminPage />} />
+        <Route path="citas/nueva" element={<CitaFormPage />} />
+        <Route path="citas/:id/editar" element={<CitaFormPage />} />
         <Route path="usuarios" element={<UsuariosListPage />} />
         <Route path="usuarios/nuevo" element={<UsuarioFormPage />} />
         <Route path="usuarios/:id/editar" element={<UsuarioFormPage />} />

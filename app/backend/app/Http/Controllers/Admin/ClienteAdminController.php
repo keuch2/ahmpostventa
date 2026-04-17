@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Traits\ApiResponse;
 use App\Models\Cliente;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class ClienteAdminController extends Controller
 {
@@ -100,5 +101,93 @@ class ClienteAdminController extends Controller
         $cliente->delete();
 
         return $this->success(null, 'Cliente eliminado.');
+    }
+
+    public function csvTemplate()
+    {
+        $headers = ['codigo_cliente', 'razon_social', 'ruc_ci', 'telefono', 'celular', 'email', 'direccion'];
+        $example = ['CLI001', 'JUAN PEREZ', '1234567-8', '021123456', '0981123456', 'juan@email.com', 'Av. Principal 123'];
+
+        $content = implode(',', $headers) . "\n" . implode(',', $example) . "\n";
+
+        return response()->streamDownload(function () use ($content) {
+            echo $content;
+        }, 'clientes_template.csv', ['Content-Type' => 'text/csv']);
+    }
+
+    public function importCsv(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|file|mimes:csv,txt|max:10240',
+        ]);
+
+        $file   = $request->file('file');
+        $handle = fopen($file->getRealPath(), 'r');
+
+        if ($handle === false) {
+            return $this->error('No se pudo leer el archivo.', [], 422);
+        }
+
+        $imported = 0;
+        $skipped  = 0;
+        $errors   = [];
+        $rowIndex = 0;
+
+        // Skip header row
+        $headerRow = fgetcsv($handle);
+
+        while (($row = fgetcsv($handle)) !== false) {
+            $rowIndex++;
+
+            if (count($row) < 7) {
+                $errors[] = "Fila {$rowIndex}: columnas insuficientes (se esperan 7).";
+                $skipped++;
+                continue;
+            }
+
+            [$codigo_cliente, $razon_social, $ruc_ci, $telefono, $celular, $email, $direccion] = $row;
+
+            $ruc_ci = trim($ruc_ci);
+
+            if (!empty($ruc_ci) && Cliente::where('ruc_ci', $ruc_ci)->exists()) {
+                $errors[] = "Fila {$rowIndex}: ruc_ci '{$ruc_ci}' ya existe, fila omitida.";
+                $skipped++;
+                continue;
+            }
+
+            $data = [
+                'empresa_id'     => 1,
+                'codigo_cliente' => trim($codigo_cliente) ?: null,
+                'razon_social'   => trim($razon_social),
+                'ruc_ci'         => $ruc_ci ?: null,
+                'telefono'       => trim($telefono) ?: null,
+                'celular'        => trim($celular) ?: null,
+                'email'          => trim($email) ?: null,
+                'direccion'      => trim($direccion) ?: null,
+            ];
+
+            $validator = Validator::make($data, [
+                'razon_social' => 'required|string|max:255',
+                'ruc_ci'       => 'nullable|string|max:50',
+                'email'        => 'nullable|email|max:255',
+            ]);
+
+            if ($validator->fails()) {
+                $errors[] = "Fila {$rowIndex}: " . implode('; ', $validator->errors()->all());
+                $skipped++;
+                continue;
+            }
+
+            Cliente::create($data);
+            $imported++;
+        }
+
+        fclose($handle);
+
+        return $this->success([
+            'imported' => $imported,
+            'skipped'  => $skipped,
+            'errors'   => $errors,
+        ], "Importación completada: {$imported} importados, {$skipped} omitidos.");
     }
 }

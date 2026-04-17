@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\VehiculoAdminController;
 use App\Http\Controllers\Admin\ClienteAdminController;
 use App\Http\Controllers\Admin\CitaAdminController;
 use App\Http\Controllers\Admin\UserAdminController;
+use App\Http\Controllers\Admin\CatalogoAdminController;
 
 Route::prefix('v1')->group(function () {
     // Auth (public)
@@ -53,11 +54,25 @@ Route::prefix('v1')->group(function () {
         Route::put('/kits-service/{kitServiceId}/items/{id}', [KitServiceItemController::class, 'update']);
         Route::delete('/kits-service/{kitServiceId}/items/{id}', [KitServiceItemController::class, 'destroy']);
 
+        // Catalogo para dropdowns
+        Route::get('/catalogo-admin', [CatalogoAdminController::class, 'index']);
+
+        // Vehiculos CSV (must be before apiResource so 'csv-template' is not treated as an ID)
+        Route::get('/vehiculos/csv-template', [VehiculoAdminController::class, 'csvTemplate']);
+        Route::post('/vehiculos/import-csv', [VehiculoAdminController::class, 'importCsv']);
         Route::apiResource('/vehiculos', VehiculoAdminController::class);
+
+        // Clientes CSV (must be before apiResource so 'csv-template' is not treated as an ID)
+        Route::get('/clientes/csv-template', [ClienteAdminController::class, 'csvTemplate']);
+        Route::post('/clientes/import-csv', [ClienteAdminController::class, 'importCsv']);
         Route::apiResource('/clientes', ClienteAdminController::class);
+
+        // Citas
+        Route::post('/citas', [CitaAdminController::class, 'store']);
         Route::get('/citas', [CitaAdminController::class, 'index']);
         Route::get('/citas/{id}', [CitaAdminController::class, 'show']);
         Route::put('/citas/{id}', [CitaAdminController::class, 'update']);
+        Route::delete('/citas/{id}', [CitaAdminController::class, 'destroy']);
 
         Route::apiResource('/usuarios', UserAdminController::class);
     });

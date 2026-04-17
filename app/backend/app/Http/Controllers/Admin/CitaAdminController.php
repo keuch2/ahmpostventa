@@ -45,6 +45,29 @@ class CitaAdminController extends Controller
         return $this->success($cita);
     }
 
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'cliente_id'       => 'required|exists:clientes,id',
+            'vehiculo_id'      => 'required|exists:vehiculos,id',
+            'tipo_servicio'    => 'required|string|max:100',
+            'fecha_solicitada' => 'required|date',
+            'kilometraje'      => 'nullable|integer|min:0',
+            'comentarios'      => 'nullable|string',
+            'kit_service_id'   => 'nullable|exists:kit_services,id',
+            'estado'           => 'nullable|string|in:solicitada,pendiente,confirmada,en_proceso,completada,cancelada',
+        ]);
+
+        $cita = CitaServicio::create(array_merge($validated, [
+            'empresa_id' => 1,
+            'estado'     => $validated['estado'] ?? 'solicitada',
+        ]));
+
+        $cita->load(['cliente', 'vehiculo.modelo.marca', 'kitService']);
+
+        return $this->success($cita, 'Cita creada.', 201);
+    }
+
     public function update(Request $request, $id)
     {
         $cita = CitaServicio::find($id);
@@ -54,12 +77,25 @@ class CitaAdminController extends Controller
         }
 
         $validated = $request->validate([
-            'estado' => 'sometimes|string|in:pendiente,confirmada,en_proceso,completada,cancelada',
+            'estado' => 'sometimes|string|in:solicitada,pendiente,confirmada,en_proceso,completada,cancelada',
             'fecha_confirmada' => 'nullable|date',
         ]);
 
         $cita->update($validated);
 
         return $this->success($cita, 'Cita actualizada.');
+    }
+
+    public function destroy($id)
+    {
+        $cita = CitaServicio::find($id);
+
+        if (!$cita) {
+            return $this->error('Cita no encontrada.', [], 404);
+        }
+
+        $cita->delete();
+
+        return $this->success(null, 'Cita eliminada.');
     }
 }
