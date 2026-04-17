@@ -8,21 +8,17 @@ set -e
 SERVER_USER=root
 SERVER_HOST=168.181.184.99
 SERVER_PORT=5519
-DEPLOY_PATH=""  # Set this after first deploy (e.g. /var/www/vicar/ahmpostventa)
-REPO_URL=https://github.com/keuch2/ahmpostventa.git
-BRANCH=stable
+DEPLOY_PATH="/home/vicar/ahmpostventa"
+PHP=/opt/php8-4/bin/php-cli
+COMPOSER=/usr/local/bin/composer
+BRANCH=main
 
 echo "==> Pushing latest code to GitHub..."
 git push origin "$BRANCH"
 
 echo "==> Deploying to production server..."
-ssh -p"$SERVER_PORT" "$SERVER_USER@$SERVER_HOST" bash << EOF
+sshpass -p '92RmpLy5HRX&Ze' ssh -o StrictHostKeyChecking=accept-new -p"$SERVER_PORT" "$SERVER_USER@$SERVER_HOST" bash << EOF
 set -e
-
-if [ -z "$DEPLOY_PATH" ]; then
-  echo "ERROR: Set DEPLOY_PATH in deploy.sh before running."
-  exit 1
-fi
 
 cd "$DEPLOY_PATH"
 
@@ -33,25 +29,17 @@ git pull origin "$BRANCH"
 
 echo "--- Backend: composer install..."
 cd app/backend
-composer install --no-dev --optimize-autoloader
+COMPOSER_ALLOW_SUPERUSER=1 $PHP -d disable_functions='' $COMPOSER install --no-dev --optimize-autoloader --no-interaction
 
 echo "--- Backend: running migrations..."
-php artisan migrate --force
-
-echo "--- Backend: clearing caches..."
-php artisan config:cache
-php artisan route:cache
-php artisan view:cache
-
-echo "--- Frontend: npm install & build..."
-cd ../frontend
-npm install --legacy-peer-deps
-npm run build
+$PHP -d disable_functions='' artisan migrate --force
 
 echo "--- Setting permissions..."
-cd ../backend
+chown -R vicar:vicar /home/vicar/ahmpostventa
 chmod -R 755 storage bootstrap/cache
-chown -R www-data:www-data storage bootstrap/cache 2>/dev/null || true
+
+echo "--- Frontend: syncing dist to mygarage..."
+cp -r /home/vicar/ahmpostventa/app/frontend/dist/. /home/vicar/public_html/mygarage/
 
 echo "==> Deploy complete!"
 EOF
