@@ -24,6 +24,8 @@ import KitDetailPage from '../pages/admin/kits/KitDetailPage';
 import CitasAdminPage from '../pages/admin/citas/CitasAdminPage';
 import UsuariosListPage from '../pages/admin/usuarios/UsuariosListPage';
 import UsuarioFormPage from '../pages/admin/usuarios/UsuarioFormPage';
+import VehiculosAdminPage from '../pages/admin/vehiculos/VehiculosAdminPage';
+import ClientesAdminPage from '../pages/admin/clientes/ClientesAdminPage';
 
 function PrivateRoute({ children }) {
   const { user, loading } = useAuth();
@@ -65,6 +67,8 @@ export default function AppRoutes() {
         <Route path="campanias/:id" element={<CampaniaDetailPage />} />
         <Route path="kits-service" element={<KitsListPage />} />
         <Route path="kits-service/:id" element={<KitDetailPage />} />
+        <Route path="vehiculos" element={<VehiculosAdminPage />} />
+        <Route path="clientes" element={<ClientesAdminPage />} />
         <Route path="citas" element={<CitasAdminPage />} />
         <Route path="usuarios" element={<UsuariosListPage />} />
         <Route path="usuarios/nuevo" element={<UsuarioFormPage />} />

@@ -2,13 +2,13 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 
 const navItems = [
-  { to: '/admin',           icon: 'fa-chart-line',     label: 'Dashboard', end: true },
-  { to: '/admin/campanias', icon: 'fa-bullhorn',       label: 'Campanias' },
-  { to: '/admin/kits',      icon: 'fa-wrench',         label: 'Kits de Service' },
-  { to: '/admin/vehiculos', icon: 'fa-car',            label: 'Vehiculos' },
-  { to: '/admin/clientes',  icon: 'fa-users',          label: 'Clientes' },
-  { to: '/admin/citas',     icon: 'fa-calendar-check', label: 'Citas' },
-  { to: '/admin/usuarios',  icon: 'fa-user-shield',    label: 'Usuarios Admin' },
+  { to: '/admin',                icon: 'fa-chart-line',     label: 'Dashboard', end: true },
+  { to: '/admin/campanias',      icon: 'fa-bullhorn',       label: 'Campañas' },
+  { to: '/admin/kits-service',   icon: 'fa-wrench',         label: 'Kits de Service' },
+  { to: '/admin/vehiculos',      icon: 'fa-car',            label: 'Vehículos' },
+  { to: '/admin/clientes',       icon: 'fa-users',          label: 'Clientes' },
+  { to: '/admin/citas',          icon: 'fa-calendar-check', label: 'Citas' },
+  { to: '/admin/usuarios',       icon: 'fa-user-shield',    label: 'Usuarios Admin' },
 ];
 
 export default function AdminSidebar() {
