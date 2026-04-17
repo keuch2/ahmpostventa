@@ -8,6 +8,9 @@ app/frontend/.env.test.local
 # Backend
 app/backend/vendor/
 app/backend/.env
+app/backend/.DS_Store
+app/backend/bootstrap/cache/packages.php
+app/backend/bootstrap/cache/services.php
 app/backend/storage/logs/
 app/backend/storage/framework/cache/
 app/backend/storage/framework/sessions/
