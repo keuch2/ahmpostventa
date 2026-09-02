@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "build:local": "vite build --mode development --base=/ahmpostventa/app/frontend/dist-local/ --outDir dist-local && sed -i \"\" \"s#/mygarage/#/ahmpostventa/app/frontend/dist-local/#g\" dist-local/.htaccess"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

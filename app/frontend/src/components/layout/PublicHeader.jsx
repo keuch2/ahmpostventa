@@ -2,6 +2,8 @@ import { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 
+import { AUTH_BUTTONS_VISIBLE } from '../../config/features';
+
 const BASE = import.meta.env.BASE_URL || '/ahmpostventa/app/frontend/';
 
 export default function PublicHeader() {
@@ -44,7 +46,7 @@ export default function PublicHeader() {
 
       {/* Top bar — identico al prototipo */}
       <div style={{ backgroundColor: '#1A1A1A' }} className="text-white text-xs py-1.5 px-4 text-center">
-        Llame al 021-XXX-XXXX &nbsp;|&nbsp; Lunes a Viernes 8:00 – 17:00
+        Llame al +595 21 728 5718 &nbsp;|&nbsp; Lunes a Viernes 8:00 – 17:00
       </div>
 
       {/* Main nav */}
@@ -111,11 +113,11 @@ export default function PublicHeader() {
                   </div>
                 )}
               </div>
-            ) : (
+            ) : AUTH_BUTTONS_VISIBLE ? (
               <Link to="/login" className="btn-honda text-xs px-4 py-2 flex items-center gap-2">
                 <i className="fa-solid fa-user"></i> Iniciar sesión
               </Link>
-            )}
+            ) : null}
 
             {/* Mobile menu btn */}
             <button
@@ -158,7 +160,7 @@ export default function PublicHeader() {
                   Cerrar sesión
                 </button>
               </>
-            ) : (
+            ) : AUTH_BUTTONS_VISIBLE ? (
               <Link
                 to="/login"
                 onClick={() => setMobileMenuOpen(false)}
@@ -166,7 +168,7 @@ export default function PublicHeader() {
               >
                 <i className="fa-solid fa-user"></i> Iniciar sesión
               </Link>
-            )}
+            ) : null}
           </div>
         </div>
       )}

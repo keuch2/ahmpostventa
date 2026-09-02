@@ -1,0 +1,146 @@
+/* Catálogo de Mantenimiento HONDA — estilos portados de
+   "Catalogo Mantenimiento HONDA (mostrador).html", acotados a .catmant */
+.catmant{
+  --navy:#0D1B3E; --blue:#1A4480; --green:#1A6B35; --red:#B81C1C; --orange:#B85A00;
+  --card:#FFFFFF; --line:#D8DBE2; --line2:#EAECF0;
+  --ink:#111827; --ink2:#4B5563; --ink3:#8A919E;
+  --mono:'IBM Plex Mono',ui-monospace,Consolas,'Courier New',monospace;
+  --sans:'IBM Plex Sans',-apple-system,'Segoe UI',Roboto,Arial,sans-serif;
+  color:var(--ink);font-family:var(--sans);
+  font-size:clamp(13px,.92vw + 9px,14px);line-height:1.5;
+}
+.catmant *{box-sizing:border-box;min-width:0}
+.catmant button,.catmant input,.catmant select{font-family:inherit;font-size:inherit;color:inherit;max-width:100%}
+.catmant :focus-visible{outline:2px solid var(--orange);outline-offset:2px}
+
+/* ---------- Bloques ---------- */
+.catmant .card{background:var(--card);border:1px solid var(--line);border-radius:3px;margin-top:clamp(12px,1.6vw,18px)}
+.catmant .card:first-child{margin-top:0}
+.catmant .card>h2{margin:0;padding:12px clamp(12px,1.8vw,18px);border-bottom:1px solid var(--line2);font-size:11.5px;
+  font-family:var(--mono);letter-spacing:.13em;text-transform:uppercase;color:var(--ink2);font-weight:600;
+  display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center}
+.catmant .card>h2 span{color:var(--ink3);letter-spacing:.02em;text-transform:none;font-weight:400;font-size:11.5px}
+.catmant .pad{padding:clamp(12px,1.8vw,18px)}
+.catmant .lbl{display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--ink3);margin-bottom:5px;font-weight:500}
+
+/* ---------- Botones ---------- */
+.catmant .btn{padding:10px 15px;border:1px solid var(--navy);background:var(--navy);color:#fff;border-radius:2px;cursor:pointer;
+  font-family:var(--mono);font-size:11px;letter-spacing:.07em;font-weight:500;white-space:nowrap}
+.catmant .btn:hover{background:#16264f}
+.catmant .btn.ghost{background:#fff;color:var(--navy)}
+.catmant .btn.ghost:hover{background:#EEF1F6}
+.catmant .btn.sm{padding:7px 11px;font-size:10.5px}
+
+/* ---------- Avisos ---------- */
+.catmant .msg{margin-top:14px;padding:11px 13px;border-radius:2px;border-left:3px solid;font-size:13px}
+.catmant .msg.ok{background:#EDF6F0;border-color:var(--green);color:#0F4A24}
+.catmant .msg.warn{background:#FDF4E8;border-color:var(--orange);color:#7A3B00}
+.catmant .msg.err{background:#FCEDED;border-color:var(--red);color:#7C1212}
+.catmant .msg b{font-family:var(--mono)}
+.catmant .hint{margin-top:14px;padding:11px 13px;background:#fff;border:1px solid var(--line);
+  border-left:3px solid var(--blue);border-radius:2px;font-size:13px;color:var(--ink2)}
+.catmant .hint b{color:var(--ink);font-weight:600}
+
+/* ---------- Selectores ---------- */
+.catmant .grid{display:grid;gap:12px}
+.catmant .g3{grid-template-columns:repeat(auto-fit,minmax(min(100%,185px),1fr))}
+.catmant select,.catmant input.txt{width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:2px;background-color:#fff;
+  font-size:13.5px;line-height:1.4;color:var(--ink)}
+.catmant select:focus,.catmant input.txt:focus{border-color:var(--blue) !important;outline:none;box-shadow:none}
+.catmant select:disabled{background-color:#F7F8FA;color:var(--ink3)}
+.catmant input.txt{font-family:var(--mono)}
+.catmant input.txt::placeholder{color:#C4C9D2}
+
+/* ---------- Ficha ---------- */
+.catmant .ficha{background:var(--navy);color:#fff;border-radius:3px;padding:clamp(13px,1.8vw,18px);display:grid;
+  gap:clamp(11px,1.6vw,16px);grid-template-columns:repeat(auto-fit,minmax(min(100%,125px),1fr));
+  margin-top:clamp(12px,1.6vw,18px);border-left:4px solid var(--orange)}
+.catmant .fi .k{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;color:#8FA6CC;text-transform:uppercase;margin-bottom:4px}
+.catmant .fi .v{font-size:clamp(14px,1.5vw,16px);font-weight:600;line-height:1.25;overflow-wrap:anywhere}
+.catmant .fi .v.m{font-family:var(--mono);letter-spacing:.04em}
+.catmant .fi .v small{font-size:10px;color:#8FA6CC;font-family:var(--mono);font-weight:400}
+
+/* ---------- KPI ---------- */
+.catmant .kpis{display:grid;gap:clamp(9px,1.1vw,12px);grid-template-columns:repeat(auto-fit,minmax(min(100%,150px),1fr));
+  margin-top:clamp(12px,1.6vw,18px)}
+.catmant .kpi{background:#fff;border:1px solid var(--line);border-top:3px solid var(--blue);border-radius:3px;padding:13px}
+.catmant .kpi .k{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink3);
+  margin-bottom:6px;line-height:1.4}
+.catmant .kpi .v{font-family:var(--mono);font-size:clamp(17px,1.9vw,21px);font-weight:600;letter-spacing:-.02em;line-height:1.1}
+.catmant .kpi .s{font-size:11px;color:var(--ink3);margin-top:4px;line-height:1.4}
+.catmant .kpi.g{border-top-color:var(--green)} .catmant .kpi.g .v{color:var(--green)}
+.catmant .kpi.o{border-top-color:var(--orange)} .catmant .kpi.o .v{color:var(--orange)}
+.catmant .kpi.n{border-top-color:var(--navy)} .catmant .kpi.n .v{color:var(--navy)}
+
+/* ---------- Tablas ---------- */
+.catmant .scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.catmant table{width:100%;border-collapse:collapse;font-size:13px}
+.catmant th{background:#F7F8FA;text-align:left;padding:8px 10px;font-family:var(--mono);font-size:10px;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--ink2);border-bottom:1px solid var(--line);font-weight:600;white-space:nowrap}
+.catmant td{padding:8px 10px;border-bottom:1px solid var(--line2);vertical-align:middle}
+.catmant tbody tr:hover>td{background:#FAFBFC}
+.catmant .num{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+.catmant .mono{font-family:var(--mono);font-size:12px;letter-spacing:.02em}
+.catmant .dim{color:var(--ink3)}
+
+/* Detalle de repuestos y mano de obra */
+.catmant .detgrid{display:grid;gap:clamp(12px,1.6vw,16px);grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr))}
+.catmant .detgrid h4{margin:0 0 7px;font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink2)}
+.catmant .detgrid table{background:#fff;border:1px solid var(--line)}
+.catmant .detgrid th{background:#EFF1F4;font-size:9px;padding:6px 7px}
+.catmant .detgrid td{padding:6px 7px;font-size:12px}
+.catmant .detgrid tfoot td{background:#F7F8FA;font-weight:600;border-bottom:0}
+
+.catmant .foot{margin-top:clamp(16px,2vw,24px);padding-top:14px;border-top:1px solid var(--line);
+  font-family:var(--mono);font-size:10.5px;color:var(--ink3);line-height:1.85}
+.catmant .tools{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.catmant .note{font-size:12px;color:var(--ink3);margin-top:8px;line-height:1.55}
+.catmant .note:empty{display:none}
+
+/* ---------- Pantallas chicas ---------- */
+@media (max-width:520px){
+  .catmant .btn{width:100%;text-align:center}
+  .catmant .tools .btn{width:auto;flex:1 1 auto}
+}
+@media (prefers-reduced-motion:reduce){.catmant *{transition:none!important;animation:none!important}}
+
+/* ---------- Impresión: A4 y PDF ----------
+   Al imprimir sólo se muestra el resultado del catálogo; el resto de la página se oculta. */
+@page{size:A4 portrait;margin:12mm}
+@media print{
+  body{background:#fff}
+  body *{visibility:hidden}
+  .catmant-print,.catmant-print *{visibility:visible}
+  .catmant-print{position:absolute;left:0;top:0;width:100%}
+  .catmant{font-size:9pt;line-height:1.32;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .catmant .tools,.catmant .btn,.catmant .hint,.catmant #catmant-sel{display:none!important}
+  .catmant .card{margin-top:7pt;border:.5pt solid #9AA0A8;border-radius:0;break-inside:avoid}
+  .catmant .card>h2{padding:4pt 6pt;font-size:7.5pt;border-bottom:.5pt solid #C8CCD2}
+  .catmant .card>h2 span{font-size:7pt}
+  .catmant .pad{padding:6pt}
+  .catmant .ficha{background:#fff;color:#000;border:.5pt solid var(--navy);border-left:2.5pt solid var(--navy);
+    border-radius:0;padding:6pt;gap:6pt;margin-top:7pt;grid-template-columns:repeat(6,1fr)}
+  .catmant .fi .k{color:#555;font-size:6pt;letter-spacing:.1em;margin-bottom:2pt}
+  .catmant .fi .v{font-size:9pt}
+  .catmant .kpis{gap:4pt;margin-top:7pt;grid-template-columns:repeat(5,1fr)}
+  .catmant .kpi{padding:5pt;border:.5pt solid #9AA0A8;border-top:1.5pt solid var(--blue);border-radius:0}
+  .catmant .kpi .k{font-size:5.8pt;letter-spacing:.08em;margin-bottom:3pt}
+  .catmant .kpi .v{font-size:11.5pt}
+  .catmant .kpi .s{font-size:6pt;margin-top:2pt}
+  .catmant .msg{margin-top:6pt;padding:5pt 6pt;font-size:8pt;border-radius:0}
+  .catmant .scroll{overflow:visible!important}
+  .catmant table{font-size:7.6pt}
+  .catmant th{padding:3pt 4pt;font-size:6pt;letter-spacing:.06em;background:#EFF1F4}
+  .catmant td{padding:3pt 4pt}
+  .catmant tbody tr:hover>td{background:transparent}
+  .catmant .mono{font-size:7.2pt}
+  .catmant .detgrid{grid-template-columns:1fr;gap:7pt}
+  .catmant .detgrid h4{font-size:7pt;margin-bottom:3pt}
+  .catmant .detgrid th{font-size:6pt;padding:2.5pt 4pt}
+  .catmant .detgrid td{font-size:7.2pt;padding:2.5pt 4pt}
+  .catmant .foot{margin-top:7pt;padding-top:5pt;font-size:6.2pt;line-height:1.5;border-top:.5pt solid #9AA0A8}
+  .catmant tfoot{display:table-row-group}
+  .catmant tr{break-inside:avoid}
+  .catmant thead{display:table-header-group}
+}
